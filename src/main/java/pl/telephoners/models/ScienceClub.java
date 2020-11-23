@@ -3,6 +3,7 @@ package pl.telephoners.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 @ToString
 @Setter
@@ -17,7 +18,7 @@ public class ScienceClub {
     private long id;
     //private Role role;
     private String role;
-    @OneToMany(fetch=FetchType.LAZY)
-    private Set<Project> projectParticipation = null;
+    @OneToMany(fetch=FetchType.EAGER)
+    private List<Project> projectParticipation = null;
 
 }

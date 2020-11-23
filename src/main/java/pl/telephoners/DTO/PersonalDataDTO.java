@@ -1,9 +1,6 @@
 package pl.telephoners.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import pl.telephoners.models.ContactDetails;
 import pl.telephoners.models.ScienceClub;
 
@@ -13,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class PersonalDataDTO {
 
     private long id;

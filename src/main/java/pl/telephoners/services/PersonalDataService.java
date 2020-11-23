@@ -36,6 +36,8 @@ public class PersonalDataService {
     public PersonalData addPersonalData(){
         PersonalData personalData = new PersonalData();
         personalData.setLastName("Norbert");
+        personalData.setFirstName("Norbert");
+        personalData.setFaculty("nie wiem");
 
         //change after
         //personalData.getAccountId()
@@ -60,6 +62,7 @@ public class PersonalDataService {
         return personalDataRepository.findById(personalData.getId()).get();
     }
 
+    //Update PersonalData object
     public PersonalData updatePersonData(PersonalData personalData){
         if(personalDataRepository.findById(personalData.getId()).isPresent()){
             try{
@@ -75,6 +78,7 @@ public class PersonalDataService {
         }
     }
 
+    //Delete PersonalData object
     public String deletePersonData(long id){
         if(personalDataRepository.findById(id).isPresent()){
             try {
@@ -88,6 +92,7 @@ public class PersonalDataService {
         }
     }
 
+    //Get all PersonalData objects
     public List<PersonalData> getAllPersonalData(int page){
         try {
 
@@ -102,7 +107,7 @@ public class PersonalDataService {
         }
 
     }
-
+    //Get PersonalData object by ID
     public PersonalData getPersonalDataById(long id){
         try {
             Optional<PersonalData> personalData = personalDataRepository.findPersonDatabyId(id);
@@ -115,7 +120,7 @@ public class PersonalDataService {
             return null;
         }
     }
-
+    //Get all PersonalData objects by LastName
     public List<PersonalData> getPersonalDataByLastName(String name,int page){
         try {
             Optional<List<PersonalData>> personalData = personalDataRepository.findPersonalDataByLastName(PageRequest.of(page,10),name);
@@ -129,13 +134,13 @@ public class PersonalDataService {
         }
     }
 
-
+    //It will be deleted
     @EventListener(ApplicationReadyEvent.class)
     public void asd(){
 
         PersonalData person = addPersonalData();
         getPersonalDataById(1);
-        getPersonalDataByLastName("Norbert",0);
+        System.out.println(getPersonalDataByLastName("Norbert",0).get(0));
 //        person.setFirstName("Bolek");
 //        updatePersonData(person);
 //        getAllPersonalData();
