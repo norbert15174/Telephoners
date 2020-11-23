@@ -17,13 +17,13 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private PersonalData leader;
-    @OneToMany(mappedBy = "id")
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<PersonalData> participants;
     private String description;
     private boolean isRecrutiment;
-    @OneToMany(mappedBy = "id")
-    private Set<WhoNeed> whoNeeds;
+//    @OneToMany(mappedBy = "id")
+//    private Set<WhoNeed> whoNeeds;
 
 }

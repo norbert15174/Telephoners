@@ -1,9 +1,8 @@
 package pl.telephoners.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,7 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Personal_data")
+@ToString
+@Table(name = "Personaldata")
 public class PersonalData {
 
     @Id
@@ -22,10 +22,13 @@ public class PersonalData {
     private String firstName;
     private String lastName;
     private String fieldOfStudy;
-    @OneToOne
+
+    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     ScienceClub scienceClubId;
-//    @OneToOne(mappedBy = "id")
-//    ContactDetails contactDetailsId;
+
+    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    ContactDetails contactDetailsId;
+
     private String faculty;
 
     //to change

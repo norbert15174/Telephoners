@@ -1,5 +1,5 @@
-package pl.telephoners.models;
-
-public enum TechnologyName {
-    Nazwa1,Nazwa2
-}
+//package pl.telephoners.models;
+//
+//public enum TechnologyName {
+//    Nazwa1,Nazwa2
+//}

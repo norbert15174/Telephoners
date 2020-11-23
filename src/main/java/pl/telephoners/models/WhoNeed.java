@@ -7,16 +7,16 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Entity
-@Table(name = "Who_needs")
-public class WhoNeed {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @OneToMany(mappedBy = "id")
-    private Set<Technology> technology;
-}
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Setter
+//@Entity
+//@Table(name = "Who_needs")
+//public class WhoNeed {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
+//
+//    @OneToMany(mappedBy = "id")
+//    private Set<Technology> technology;
+//}

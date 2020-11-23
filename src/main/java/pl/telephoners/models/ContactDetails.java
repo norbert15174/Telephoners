@@ -6,10 +6,10 @@ package pl.telephoners.models;
 
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -30,7 +30,20 @@ public class ContactDetails {
     @Email
     private String email;
     private String address;
-    @Size(min=9,max=15)
     private float phoneNumber;
 
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "contactDetailsId", fetch = FetchType.LAZY)
+    private PersonalData PersonalDataId;
+
+    @Override
+    public String toString() {
+        return "ContactDetails{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                '}';
+    }
 }
