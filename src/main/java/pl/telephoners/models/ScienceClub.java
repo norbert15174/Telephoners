@@ -19,6 +19,7 @@ public class ScienceClub {
     //private Role role;
     private String role;
     @OneToMany(fetch=FetchType.EAGER)
+    @JoinColumn(name="proj_id",referencedColumnName = "id")
     private List<Project> projectParticipation = null;
 
 }
