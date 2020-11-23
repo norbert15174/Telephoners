@@ -22,21 +22,20 @@ import java.util.Set;
 @Service
 public class ProjectsService {
 
-
-    @Autowired
     ProjectRepository projectRepository;
-
-
-
-
     private PersonalDataRepository personalDataRepository;
     private PersonalDataObjectMapperClass personalDataObjectMapperClass;
 
     @Autowired
-    public ProjectsService(PersonalDataRepository personalDataRepository, PersonalDataObjectMapperClass personalDataObjectMapperClass) {
+    public ProjectsService(ProjectRepository projectRepository, PersonalDataRepository personalDataRepository, PersonalDataObjectMapperClass personalDataObjectMapperClass) {
+        this.projectRepository = projectRepository;
         this.personalDataRepository = personalDataRepository;
         this.personalDataObjectMapperClass = personalDataObjectMapperClass;
     }
+
+
+
+
 
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
@@ -47,6 +46,7 @@ public class ProjectsService {
         List<PersonalData> personalData = new ArrayList<>();
         personalData.add(personalData2);
         project.setParticipants(personalData);
+        projectRepository.save(project);
 
     }
 

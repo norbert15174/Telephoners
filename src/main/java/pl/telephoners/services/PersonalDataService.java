@@ -34,6 +34,8 @@ public class PersonalDataService {
 
 
     public PersonalData addPersonalData(){
+
+        //temp init data
         PersonalData personalData = new PersonalData();
         personalData.setLastName("Norbert");
         personalData.setFirstName("Norbert");
@@ -139,11 +141,8 @@ public class PersonalDataService {
     public void asd(){
 
         PersonalData person = addPersonalData();
-        getPersonalDataById(1);
-        System.out.println(getPersonalDataByLastName("Norbert",0).get(0));
-//        person.setFirstName("Bolek");
-//        updatePersonData(person);
-//        getAllPersonalData();
+
+
     }
 
 }
