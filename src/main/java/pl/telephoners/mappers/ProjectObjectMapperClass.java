@@ -1,5 +1,6 @@
 package pl.telephoners.mappers;
 
+
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -9,49 +10,49 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import pl.telephoners.DTO.PersonalDataDTO;
+import pl.telephoners.DTO.ProjectDTO;
 import pl.telephoners.models.PersonalData;
+import pl.telephoners.models.Project;
 import pl.telephoners.repositories.PersonalDataRepository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 //This class is responsible for mapping PersonalData to PersonalDataDTO
 @Component
 @NoArgsConstructor
-public class PersonalDataObjectMapperClass {
+public class ProjectObjectMapperClass {
 
 
 
     //Init model mapper PersonalData to PersonalDataDTO
-    private ModelMapper personalDataObjectMapper(){
+    private ModelMapper projectObjectMapper(){
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<PersonalData, PersonalDataDTO>() {
+        modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
             protected void configure() {
                 map().setId(source.getId());
-                map().setFaculty(source.getFaculty());
-                map().setFieldOfStudy(source.getFieldOfStudy());
-                map().setFirstName(source.getFirstName());
-                map().setLastName(source.getLastName());
-                map().setRole(source.getRole());
-
+                map().setDescription(source.getDescription());
+                map().setName(source.getName());
             }
         });
         return modelMapper;
     }
 
     //Return mapped models
-    public List<PersonalDataDTO> mapPersonalDataToPersonalDataDTO(List<PersonalData> personalData){
-        List<PersonalDataDTO> personalDataDTOS = new ArrayList<>();
-        personalData.forEach((pd -> personalDataDTOS.add(personalDataObjectMapper().map(pd,PersonalDataDTO.class))));
-        return personalDataDTOS;
+    public List<ProjectDTO> mapProjectToProjectDTO(Set<Project> projects){
+        List<ProjectDTO> projectDTOS = new ArrayList<>();
+        projects.forEach((pd -> projectDTOS.add(projectObjectMapper().map(pd,ProjectDTO.class))));
+        return projectDTOS;
     }
 
     //Return mapped model
-    public PersonalDataDTO mapPersonalDataToPersonalDataDTO(PersonalData personalData){
-        PersonalDataDTO personalDataDTOS;
-        personalDataDTOS = personalDataObjectMapper().map(personalData,PersonalDataDTO.class);
+    public ProjectDTO mapProjectToProjectDTO(Project project){
+        ProjectDTO personalDataDTOS;
+        personalDataDTOS = projectObjectMapper().map(project,ProjectDTO.class);
         return personalDataDTOS;
     }
 
@@ -59,3 +60,4 @@ public class PersonalDataObjectMapperClass {
 
 
 }
+

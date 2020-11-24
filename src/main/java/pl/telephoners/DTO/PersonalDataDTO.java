@@ -1,10 +1,7 @@
 package pl.telephoners.DTO;
 
 import lombok.*;
-import pl.telephoners.models.ContactDetails;
-import pl.telephoners.models.ScienceClub;
-
-import javax.persistence.*;
+import pl.telephoners.models.Role;
 
 @Setter
 @Getter
@@ -18,6 +15,7 @@ public class PersonalDataDTO {
     private String lastName;
     private String fieldOfStudy;
     private String faculty;
+    private Role role;
 
 
 }

@@ -1,39 +1,38 @@
 package pl.telephoners.models;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Entity
+@ToString
 @Table(name = "Telephoners_projects")
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "project_id")
     private long id;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private PersonalData leader;
 
-    @OneToMany(targetEntity = PersonalData.class,fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinColumn(name="part_id",referencedColumnName = "id")
-    private Collection<PersonalData> participants = new ArrayList<>();
+    @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    Set<Participant> participants = new HashSet<>();
 
 
+    public void addParticipant(Participant participant){
+        participants.add(participant);
+    }
 
+    private String name;
     private String description;
     private boolean isRecrutiment;
-//    @OneToMany(mappedBy = "id")
-//    private Set<WhoNeed> whoNeeds;
+
 
 }

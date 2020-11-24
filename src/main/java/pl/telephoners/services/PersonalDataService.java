@@ -5,22 +5,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-//import pl.telephoners.models.ContactDetails;
-//import pl.telephoners.models.PersonalData;
-//import pl.telephoners.models.Role;
-//import pl.telephoners.models.ScienceClub;
 import pl.telephoners.models.ContactDetails;
 import pl.telephoners.models.PersonalData;
-//import pl.telephoners.repositories.ContactDetailsRepository;
-import pl.telephoners.models.ScienceClub;
 import pl.telephoners.repositories.ContactDetailsRepository;
 import pl.telephoners.repositories.PersonalDataRepository;
-import pl.telephoners.repositories.ScienceClubRepository;
-
 import java.util.List;
 import java.util.Optional;
-//import pl.telephoners.repositories.ScienceClubRepository;
 
 @Service
 public class PersonalDataService {
@@ -28,26 +18,17 @@ public class PersonalDataService {
     // will change as soon as the creation of the personal data service is completed
     @Autowired
     private PersonalDataRepository personalDataRepository;
-    private ScienceClubRepository scienceClubRepository;
     private ContactDetailsRepository contactDetailsRepository;
 
 
 
     public PersonalData addPersonalData(){
 
-        //temp init data
         PersonalData personalData = new PersonalData();
-        personalData.setLastName("Norbert");
-        personalData.setFirstName("Norbert");
-        personalData.setFaculty("nie wiem");
 
         //change after
         //personalData.getAccountId()
 
-        //Create new ScienceClub
-        ScienceClub scienceClub = new ScienceClub();
-        scienceClub.setRole("Role.Admin");
-        personalData.setScienceClubId(scienceClub);
 
         //Create new ContactDetails
         ContactDetails contactDetails =  new ContactDetails();
@@ -136,11 +117,12 @@ public class PersonalDataService {
         }
     }
 
+
     //It will be deleted
     @EventListener(ApplicationReadyEvent.class)
     public void asd(){
 
-        PersonalData person = addPersonalData();
+        addPersonalData();
 
 
     }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 
 @Setter
@@ -13,27 +15,29 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @ToString
-@Table(name = "Personal_user_data")
+@Table(name = "perso_data")
 public class PersonalData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "personal_id")
     private long id;
     private String firstName;
     private String lastName;
     private String fieldOfStudy;
+    private Role role;
 
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    ScienceClub scienceClubId;
 
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    ContactDetails contactDetailsId;
+
+    @OneToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    private ContactDetails contactDetailsId;
+
+
 
     private String faculty;
 
     //to change
     private String accountId;
-
 
 
 }
