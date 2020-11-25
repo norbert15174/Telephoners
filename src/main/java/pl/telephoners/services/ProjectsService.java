@@ -35,6 +35,8 @@ public class ProjectsService {
         this.projectObjectMapperClass = projectObjectMapperClass;
     }
 
+
+    //Project adding method based on project class and personal data ID
     public Project addNewProject(Project project, long idleader){
         Optional<PersonalData> personalData = personalDataRepository.findById(idleader);
         if(project == null
@@ -50,28 +52,35 @@ public class ProjectsService {
             return null;
         }
     }
+    //Project adding method based on project class and personal data class
     public Project addNewProject(Project project, PersonalData personalDataToSave){
         return addNewProject(project,personalDataToSave.getId());
     }
+
+    //Project adding method based on personal data class
     public Project addNewProject(PersonalData personalDataToSave){
         Project project = new Project();
         return addNewProject(project,personalDataToSave.getId());
     }
+
+    //Project adding method based on project ID
     public Project addNewProject(Long leaderId){
         Project project = new Project();
         return addNewProject(project,leaderId);
     }
 
+    // Method of joining the participant to the project based on the Project class and Personal Data class
     public boolean enrolPersonToProject(Project project, PersonalData personalData){
         //if project and personalData exist, method will enroll person into project
         if(projectRepository.findById(project.getId()).isPresent() && personalDataRepository.findById(personalData.getId()).isPresent()){
 
 
             try {
+                //Check that the relationship does not exist
+                //if not, create the relation else return null
                 if (participantRepository.checkIfExist(personalData.getId(),project.getId()).isPresent()){
                     return false;
                 };
-
                 Participant participant = new Participant();
                 participant.setProjectParticipants(project);
                 participant.setPersonParticipants(personalData);
@@ -86,10 +95,12 @@ public class ProjectsService {
         }
         return false;
     }
+    // Method of joining the participant to the project based on the Project ID and Personal Data ID
     public boolean enrolPersonToProject(long projectId, long personalId){
         return enrolPersonToProject(projectRepository.findById(projectId).get(),personalDataRepository.findById(personalId).get());
     }
 
+    // Method of unsubscribing from the project
     public boolean leaveTheProject(long id){
 
         Optional<Participant> participant = participantRepository.findById(id);
@@ -105,6 +116,7 @@ public class ProjectsService {
         return false;
     }
 
+    //Get participants related to project
     public Set<Participant> getProjectParticipation(long id){
         if(projectRepository.findById(id).isPresent()){
             return projectRepository.findProjectById(id).get().getParticipants();
@@ -112,6 +124,7 @@ public class ProjectsService {
         return null;
     }
 
+    //Get projectDTOS related to participant
     public List<ProjectDTO> getParticipation(long id){
 
         Optional<List<Participant>> participants = participantRepository.getMyProjectParticipation(id);
@@ -125,6 +138,7 @@ public class ProjectsService {
         return null;
     }
 
+    //Delete project relation and project
     public boolean deleteProject(long id){
         Optional<Project> project = projectRepository.findProjectById(id);
         if(project.isPresent()){
@@ -140,16 +154,18 @@ public class ProjectsService {
         return false;
     }
 
+    //Update project based on ProjectDTO class
     public Project updateProject(ProjectDTO projectDTO){
         if(projectRepository.findById(projectDTO.getId()).isPresent()){
             Project project = projectRepository.findById(projectDTO.getId()).get();
             project.setDescription(projectDTO.getDescription());
-            project.setName(projectDTO.getName());
+            project.setTopic(projectDTO.getTopic());
             return projectRepository.save(project);
         }
         return null;
     }
 
+    //Determining the recruitment status for the project
     public boolean setRecrutiment(long id,boolean isRec){
         Optional<Project> project = projectRepository.findById(id);
         if(project.isPresent()){
@@ -159,6 +175,6 @@ public class ProjectsService {
         }
         return false;
     }
-    
+
 
 }

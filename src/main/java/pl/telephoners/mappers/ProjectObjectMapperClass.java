@@ -36,7 +36,7 @@ public class ProjectObjectMapperClass {
             protected void configure() {
                 map().setId(source.getId());
                 map().setDescription(source.getDescription());
-                map().setName(source.getName());
+                map().setTopic(source.getTopic());
             }
         });
         return modelMapper;

@@ -15,6 +15,7 @@ public class Participant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "participant_id")
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -23,6 +24,7 @@ public class Participant {
 
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+    @JoinColumn(name = "project_id")
     private Project projectParticipants;
 
 

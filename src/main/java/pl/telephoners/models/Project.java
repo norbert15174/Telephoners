@@ -30,7 +30,7 @@ public class Project {
         participants.add(participant);
     }
 
-    private String name;
+    private String topic;
     private String description;
     private boolean isRecrutiment;
 
