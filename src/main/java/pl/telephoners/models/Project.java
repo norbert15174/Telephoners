@@ -2,6 +2,7 @@ package pl.telephoners.models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ public class Project {
     private long id;
     @OneToOne(fetch = FetchType.EAGER)
     private PersonalData leader;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
     Set<Participant> participants = new HashSet<>();
 
@@ -32,7 +33,8 @@ public class Project {
 
     private String topic;
     private String description;
-    private boolean isRecrutiment;
+    private boolean isRecruitment = true;
+    private boolean isFinished = false;
 
 
 }

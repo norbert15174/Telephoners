@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import pl.telephoners.DTO.PersonalDataDTO;
 import pl.telephoners.DTO.ProjectDTO;
 import pl.telephoners.mappers.PersonalDataObjectMapperClass;
 import pl.telephoners.mappers.ProjectObjectMapperClass;
@@ -71,6 +72,8 @@ public class ProjectsService {
 
     // Method of joining the participant to the project based on the Project class and Personal Data class
     public boolean enrolPersonToProject(Project project, PersonalData personalData){
+        //check if there is recruitment to the project
+        if(!project.isRecruitment()) return false;
         //if project and personalData exist, method will enroll person into project
         if(projectRepository.findById(project.getId()).isPresent() && personalDataRepository.findById(personalData.getId()).isPresent()){
 
@@ -80,7 +83,7 @@ public class ProjectsService {
                 //if not, create the relation else return null
                 if (participantRepository.checkIfExist(personalData.getId(),project.getId()).isPresent()){
                     return false;
-                };
+                }
                 Participant participant = new Participant();
                 participant.setProjectParticipants(project);
                 participant.setPersonParticipants(personalData);
@@ -97,13 +100,16 @@ public class ProjectsService {
     }
     // Method of joining the participant to the project based on the Project ID and Personal Data ID
     public boolean enrolPersonToProject(long projectId, long personalId){
-        return enrolPersonToProject(projectRepository.findById(projectId).get(),personalDataRepository.findById(personalId).get());
+        Optional<Project> project = projectRepository.findById(projectId);
+        Optional<PersonalData> personalData = personalDataRepository.findById(personalId);
+        if(project.isPresent() && personalData.isPresent()) return enrolPersonToProject(project.get(),personalData.get());
+        return false;
     }
 
     // Method of unsubscribing from the project
-    public boolean leaveTheProject(long id){
+    public boolean leaveTheProject(long projectId, long personId){
 
-        Optional<Participant> participant = participantRepository.findById(id);
+        Optional<Participant> participant = participantRepository.getParticipantByPersonParticipantsIdAndAndProjectParticipantsId(projectId,personId);
         if(participant.isPresent()){
             try {
                 participantRepository.delete(participant.get());
@@ -117,22 +123,23 @@ public class ProjectsService {
     }
 
     //Get participants related to project
-    public Set<Participant> getProjectParticipation(long id){
+    public Set<PersonalDataDTO> getProjectParticipation(long id){
         if(projectRepository.findById(id).isPresent()){
-            return projectRepository.findProjectById(id).get().getParticipants();
+            Set<Participant> participants = projectRepository.findProjectById(id).get().getParticipants();
+            Set<PersonalDataDTO> personalDataDTOS = new HashSet<>();
+            participants.forEach(participant -> personalDataDTOS.add(personalDataObjectMapperClass.mapPersonalDataToPersonalDataDTO(participant.getPersonParticipants())));
+            return personalDataDTOS;
         }
         return null;
     }
 
     //Get projectDTOS related to participant
-    public List<ProjectDTO> getParticipation(long id){
+    public List<ProjectDTO> getParticipants(long id){
 
         Optional<List<Participant>> participants = participantRepository.getMyProjectParticipation(id);
         if(participants.isPresent()){
             List<ProjectDTO> projectDTOS = new ArrayList<>();
-            participants.get().forEach(participant -> {
-                projectDTOS.add(projectObjectMapperClass.mapProjectToProjectDTO(participant.getProjectParticipants()));
-            });
+            participants.get().forEach(participant -> projectDTOS.add(projectObjectMapperClass.mapProjectToProjectDTO(participant.getProjectParticipants())));
             return projectDTOS;
         }
         return null;
@@ -149,7 +156,6 @@ public class ProjectsService {
                 System.out.println(e.getMessage());
                 return false;
             }
-
         }
         return false;
     }
@@ -166,15 +172,31 @@ public class ProjectsService {
     }
 
     //Determining the recruitment status for the project
-    public boolean setRecrutiment(long id,boolean isRec){
+    public boolean setRecruitment(long id,boolean isRec){
         Optional<Project> project = projectRepository.findById(id);
         if(project.isPresent()){
-            project.get().setRecrutiment(isRec);
+            project.get().setRecruitment(isRec);
             projectRepository.save(project.get());
             return true;
         }
         return false;
     }
 
+    public boolean setProjectFinish(long id){
+        Optional<Project> project = projectRepository.findById(id);
+        if(project.isPresent()){
+            project.get().setFinished(true);
+            projectRepository.save(project.get());
+            return true;
+        }
+        return false;
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+public void init(){
+        //leaveTheProject(1L,1l);
+        //addNewProject(1L);
+        //enrolPersonToProject(1L,1L);
+}
 
 }
