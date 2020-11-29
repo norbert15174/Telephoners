@@ -192,11 +192,5 @@ public class ProjectsService {
         return false;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-public void init(){
-        //leaveTheProject(1L,1l);
-        //addNewProject(1L);
-        //enrolPersonToProject(1L,1L);
-}
 
 }
