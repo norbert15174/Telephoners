@@ -11,5 +11,5 @@ public class ProjectDTO {
     private long id;
     private String topic;
     private String description;
-    private boolean isRecrutiment;
+    private boolean isRecruitment;
 }

@@ -18,7 +18,7 @@ public class Post {
     private long id;
     private String topic;
     private String postName;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<Gallery> galleries;
     private String mainUrl;
 }

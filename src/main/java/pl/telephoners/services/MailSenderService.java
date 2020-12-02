@@ -5,7 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import pl.telephoners.models.MailContact;
-import pl.telephoners.repositories.MailContactRespository;
+import pl.telephoners.repositories.MailContactRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -16,12 +16,12 @@ import java.util.Optional;
 public class MailSenderService {
 
 
-    private MailContactRespository mailContactRespository;
+    private MailContactRepository mailContactRepository;
     private JavaMailSender javaMailSender;
 
     @Autowired
-    public MailSenderService(MailContactRespository mailContactRespository, JavaMailSender javaMailSender) {
-        this.mailContactRespository = mailContactRespository;
+    public MailSenderService(MailContactRepository mailContactRepository, JavaMailSender javaMailSender) {
+        this.mailContactRepository = mailContactRepository;
         this.javaMailSender = javaMailSender;
     }
 
@@ -49,13 +49,13 @@ public class MailSenderService {
     }
 
     public MailContact addSubscriberMail(MailContact mailContact) {
-        if(!mailContactRespository.findFirstByMailAddress(mailContact.getMailAddress()).isPresent()) return mailContactRespository.save(mailContact);
+        if(!mailContactRepository.findFirstByMailAddress(mailContact.getMailAddress()).isPresent()) return mailContactRepository.save(mailContact);
         return null;
     }
 
     public boolean deleteSubscriber(long id) {
-        if(mailContactRespository.findById(id).isPresent()){
-            mailContactRespository.deleteById(id);
+        if(mailContactRepository.findById(id).isPresent()){
+            mailContactRepository.deleteById(id);
             return true;
         }
         return false;
@@ -63,7 +63,7 @@ public class MailSenderService {
 
 
     public MailContact findSubscriberMail(String name) {
-        Optional<MailContact> mailContact = mailContactRespository.findFirstByMailAddress(name);
+        Optional<MailContact> mailContact = mailContactRepository.findFirstByMailAddress(name);
         if(mailContact.isPresent()){
             return mailContact.get();
         }
@@ -71,7 +71,7 @@ public class MailSenderService {
     }
 
     public MailContact findSubscriberMailById(long id) {
-        Optional<MailContact> mailContact = mailContactRespository.findById(id);
+        Optional<MailContact> mailContact = mailContactRepository.findById(id);
         if(mailContact.isPresent()){
             return mailContact.get();
         }
@@ -79,7 +79,7 @@ public class MailSenderService {
     }
 
     public List<MailContact> getAllSubscriber() {
-        List<MailContact> mailContacts = mailContactRespository.findAll();
+        List<MailContact> mailContacts = mailContactRepository.findAll();
         if(mailContacts.isEmpty()){
             return null;
         }

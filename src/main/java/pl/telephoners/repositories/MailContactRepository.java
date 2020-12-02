@@ -7,7 +7,7 @@ import pl.telephoners.models.MailContact;
 import java.util.Optional;
 
 @Repository
-public interface MailContactRespository extends JpaRepository<MailContact,Long> {
+public interface MailContactRepository extends JpaRepository<MailContact,Long> {
 
     Optional<MailContact> findFirstByMailAddress(String mailAddress);
 

@@ -1,5 +1,7 @@
 package pl.telephoners.controllers;
 
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class RestProjectController {
         this.projectsService = projectsService;
     }
 
-    @GetMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<Project> addNewProject(@RequestBody Project project , @RequestParam long leaderId){
 
         Project projectToReturn = projectsService.addNewProject(project,leaderId);
@@ -64,7 +66,7 @@ public class RestProjectController {
     @GetMapping("/enroltoproject")
     public ResponseEntity enrolToTheProjectByPersonalAndProjectClass(@RequestBody PersonalData personalData,@RequestBody Project project){
 
-        boolean participant = projectsService.enrolPersonToProject(project,personalData);
+        boolean participant = projectsService.enrolPersonInTheProject(project,personalData);
         if(participant){
             return new ResponseEntity(HttpStatus.CREATED);
         }else {
@@ -76,7 +78,7 @@ public class RestProjectController {
     @GetMapping("/enrol")
     public ResponseEntity enrolToTheProjectByPersonalAndProjectClass(@RequestParam long projectId,@RequestParam long personId){
 
-        boolean participant = projectsService.enrolPersonToProject(projectId,personId);
+        boolean participant = projectsService.enrolPersonInTheProject(projectId,personId);
         if(participant){
             return new ResponseEntity(HttpStatus.CREATED);
         }else {
@@ -138,6 +140,13 @@ public class RestProjectController {
     public ResponseEntity setProjectFinish(@RequestParam long id){
         if(projectsService.setProjectFinish(id)) return new ResponseEntity(HttpStatus.ACCEPTED);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/leader/{id}")
+    public ResponseEntity<PersonalData> getLeader(@PathVariable long id){
+        PersonalData personalData = projectsService.getLeader(id);
+        if(personalData == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(personalData,HttpStatus.OK);
     }
 
 }

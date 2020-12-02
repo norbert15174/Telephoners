@@ -71,10 +71,10 @@ public class ProjectsService {
     }
 
     // Method of joining the participant to the project based on the Project class and Personal Data class
-    public boolean enrolPersonToProject(Project project, PersonalData personalData){
+    public boolean enrolPersonInTheProject(Project project, PersonalData personalData){
         //check if there is recruitment to the project
         if(!project.isRecruitment()) return false;
-        //if project and personalData exist, method will enroll person into project
+        //if project and personalData exist, method will enrol person into project
         if(projectRepository.findById(project.getId()).isPresent() && personalDataRepository.findById(personalData.getId()).isPresent()){
 
 
@@ -99,10 +99,10 @@ public class ProjectsService {
         return false;
     }
     // Method of joining the participant to the project based on the Project ID and Personal Data ID
-    public boolean enrolPersonToProject(long projectId, long personalId){
+    public boolean enrolPersonInTheProject(long projectId, long personalId){
         Optional<Project> project = projectRepository.findById(projectId);
         Optional<PersonalData> personalData = personalDataRepository.findById(personalId);
-        if(project.isPresent() && personalData.isPresent()) return enrolPersonToProject(project.get(),personalData.get());
+        if(project.isPresent() && personalData.isPresent()) return enrolPersonInTheProject(project.get(),personalData.get());
         return false;
     }
 
@@ -192,5 +192,10 @@ public class ProjectsService {
         return false;
     }
 
+    public PersonalData getLeader(long id){
+        Optional<Project> project = projectRepository.findProjectByLeaderId(id);
+        if(project.isPresent()) return project.get().getLeader();
+        return null;
+    }
 
 }

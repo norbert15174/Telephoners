@@ -20,10 +20,10 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private long id;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private PersonalData leader;
     @JsonIgnore
-    @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.EAGER,orphanRemoval = true)
+    @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     Set<Participant> participants = new HashSet<>();
 
 
