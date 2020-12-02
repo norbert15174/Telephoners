@@ -18,7 +18,7 @@ public class Participant {
     @Column(name = "participant_id")
     private long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personal_id")
     private PersonalData personParticipants = null;
 

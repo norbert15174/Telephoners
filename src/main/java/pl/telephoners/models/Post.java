@@ -20,5 +20,6 @@ public class Post {
     private String postName;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private Set<Gallery> galleries;
-    private String mainUrl;
+    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Gallery mainPhoto;
 }
