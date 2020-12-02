@@ -1,17 +1,16 @@
 package pl.telephoners.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.storage.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.telephoners.models.Gallery;
+
+import pl.telephoners.DTO.PostDTO;
 import pl.telephoners.models.Post;
 import pl.telephoners.services.PostService;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -21,14 +20,56 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("upload-images")
-    public void uploadImage(@RequestParam("mainfile") MultipartFile file,@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData ){
+    @PostMapping("upload-images/{authorId}")
+    public ResponseEntity<Post> uploadImage(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData,@PathVariable long authorId ){
 
 
-        System.out.println(postService.addNewPost(file,multipartFiles,postData));
-
+        Post post = postService.addNewPost(file,multipartFiles,postData,authorId);
+        if(post==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(post,HttpStatus.CREATED);
 
     }
 
+    @GetMapping("/page/{page}")
+    public ResponseEntity<List<Post>> findPosts(@PathVariable int page){
+        return new ResponseEntity<>(postService.findAllPosts(page),HttpStatus.OK);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<Post>> getPostsByName(@PathVariable String name){
+        List<Post> posts = postService.findPostByName(name);
+        if(posts == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(posts,HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Post> findPostById(@PathVariable long id){
+        Post post = postService.findPostById(id);
+        if(post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(post,HttpStatus.OK);
+    }
+
+    @PostMapping("/photos/add/{id}")
+    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id){
+
+        Post post = postService.addPhotosToPost(multipartFiles,id);
+        if(post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(post,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/update/{postId}")
+    public ResponseEntity<Post> updatePost(@RequestParam String topic, @RequestParam String content, @PathVariable long postId){
+        Post post = postService.updatePost(topic,content,postId);
+        if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(post,HttpStatus.OK);
+    }
+
+    @GetMapping("/author/{id}")
+    public ResponseEntity<List<PostDTO>> getAuthorPosts(@PathVariable long id){
+        List<PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
+        if(postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(postDtos,HttpStatus.OK);
+    }
 
 }

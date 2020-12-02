@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.telephoners.DTO.PersonalDataDTO;
+import pl.telephoners.DTO.PostDTO;
 import pl.telephoners.DTO.ProjectDTO;
 import pl.telephoners.models.Participant;
 import pl.telephoners.models.PersonalData;
@@ -64,7 +65,7 @@ public class RestProjectController {
     }
 
     @GetMapping("/enroltoproject")
-    public ResponseEntity enrolToTheProjectByPersonalAndProjectClass(@RequestBody PersonalData personalData,@RequestBody Project project){
+    public ResponseEntity<String> enrolInTheProjectByPersonalAndProjectClass(@RequestBody PersonalData personalData,@RequestBody Project project){
 
         boolean participant = projectsService.enrolPersonInTheProject(project,personalData);
         if(participant){
@@ -76,7 +77,7 @@ public class RestProjectController {
 
     }
     @GetMapping("/enrol")
-    public ResponseEntity enrolToTheProjectByPersonalAndProjectClass(@RequestParam long projectId,@RequestParam long personId){
+    public ResponseEntity<String> enrolInTheProjectByPersonalAndProjectClass(@RequestParam long projectId,@RequestParam long personId){
 
         boolean participant = projectsService.enrolPersonInTheProject(projectId,personId);
         if(participant){
@@ -113,13 +114,13 @@ public class RestProjectController {
     }
 
     @GetMapping("/leave")
-    public ResponseEntity leaveTheProject(@RequestParam long personId,@RequestParam long projectId){
+    public ResponseEntity<String> leaveTheProject(@RequestParam long personId,@RequestParam long projectId){
         if(projectsService.leaveTheProject(personId,projectId)) return new ResponseEntity(HttpStatus.ACCEPTED);
         return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteTheProject(@PathVariable long id){
+    public ResponseEntity<String> deleteTheProject(@PathVariable long id){
         if(projectsService.deleteProject(id)) return new ResponseEntity(HttpStatus.ACCEPTED);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
@@ -148,5 +149,6 @@ public class RestProjectController {
         if(personalData == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(personalData,HttpStatus.OK);
     }
+
 
 }

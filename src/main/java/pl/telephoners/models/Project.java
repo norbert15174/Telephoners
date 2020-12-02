@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @NoArgsConstructor
@@ -32,6 +33,7 @@ public class Project {
     }
 
     private String topic;
+    @Size(max=2000)
     private String description;
     private boolean isRecruitment = true;
     private boolean isFinished = false;
