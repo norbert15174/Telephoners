@@ -68,12 +68,10 @@ public class PostService {
         } catch (JsonMappingException e) {
             e.printStackTrace();
             return null;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
         }
-
-
-
-
-
     }
 
 
