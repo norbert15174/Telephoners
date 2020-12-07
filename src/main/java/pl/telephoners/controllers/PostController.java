@@ -4,6 +4,8 @@ package pl.telephoners.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,6 +72,11 @@ public class PostController {
         List<PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
         if(postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(postDtos,HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public void getUser(@AuthenticationPrincipal UsernamePasswordAuthenticationToken user){
+        System.out.println("asd");
     }
 
 }

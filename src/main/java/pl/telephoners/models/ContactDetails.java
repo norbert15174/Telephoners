@@ -27,8 +27,7 @@ public class ContactDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Email
-    private String email;
+
     private String address;
     private float phoneNumber;
 
@@ -41,7 +40,6 @@ public class ContactDetails {
     public String toString() {
         return "ContactDetails{" +
                 "id=" + id +
-                ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
                 ", phoneNumber=" + phoneNumber +
                 '}';

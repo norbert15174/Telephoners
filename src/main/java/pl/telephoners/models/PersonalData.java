@@ -29,15 +29,12 @@ public class PersonalData {
 
 
 
-    @OneToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
     private ContactDetails contactDetailsId;
 
 
 
     private String faculty;
-
-    //to change
-    private String accountId;
 
 
 }

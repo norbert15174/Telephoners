@@ -1,5 +1,5 @@
 package pl.telephoners.models;
 
 public enum Role {
-    Admin,User
+    ROLE_ADMIN,ROLE_USER,ROLE_MOD;
 }

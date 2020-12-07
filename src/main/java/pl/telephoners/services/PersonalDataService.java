@@ -26,10 +26,6 @@ public class PersonalDataService {
 
         PersonalData personalData = new PersonalData();
 
-        //change after
-        //personalData.getAccountId()
-
-
         //Create new ContactDetails
         ContactDetails contactDetails =  new ContactDetails();
         personalData.setContactDetailsId(contactDetails);
