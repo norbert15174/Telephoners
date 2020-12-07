@@ -9,6 +9,8 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -146,6 +148,12 @@ public class PostService {
             return null;
 
     }
+    //to modify
+    public boolean deletePost(){
+        BlobId blobId = BlobId.of("telephoners","post/Norbercik/039e1987ec0e3872933e37a6dc7340bab.jpg");
+        storage.delete(blobId);
+        return true;
+    }
 
     public Post addPhotosToPost(MultipartFile[] multipartFiles, long id){
 
@@ -204,5 +212,10 @@ public class PostService {
         return  postObjectMapperClass.mapPostsToPostsDTO(posts.get());
 
     }
+
+//    @EventListener(ApplicationReadyEvent.class)
+//    public void init(){
+//        deletePost();
+//    }
 
 }
