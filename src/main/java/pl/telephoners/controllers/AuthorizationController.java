@@ -3,6 +3,7 @@ package pl.telephoners.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.telephoners.services.UserAppService;
 
 import java.util.Map;
@@ -29,8 +30,9 @@ public class AuthorizationController {
 
 
     @GetMapping("/register")
-    public void enableUserAccount(@RequestParam String token){
+    public RedirectView enableUserAccount(@RequestParam String token){
         userAppService.enableUserAccount(token);
+        return new RedirectView("https://www.baeldung.com/spring-redirect-and-forward");
     }
 
     @PostMapping("/login")

@@ -198,4 +198,19 @@ public class ProjectsService {
         return null;
     }
 
+    public List<Project> findProjectsByLeader(long id){
+        Optional<List<Project>> projects = projectRepository.findProjectsByLeader(id);
+        if(projects.isPresent()) return projects.get();
+        return null;
+    }
+
+    public boolean leaveTheProjectByPersonalId(long id){
+        Optional<List<Participant>> participants = participantRepository.findAllByPersonParticipantsId(id);
+        if(participants.isPresent()){
+            participants.get().forEach(participant -> participantRepository.delete(participant));
+            return true;
+        }
+        return false;
+    }
+
 }

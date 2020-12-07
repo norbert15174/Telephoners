@@ -22,4 +22,6 @@ public interface ParticipantRepository extends JpaRepository<Participant,Long>{
 
     Optional<Participant> getParticipantByPersonParticipantsIdAndAndProjectParticipantsId(long personId,long projectId);
 
+    Optional<List<Participant>> findAllByPersonParticipantsId(long id);
+
 }

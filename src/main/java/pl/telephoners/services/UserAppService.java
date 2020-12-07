@@ -16,11 +16,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.telephoners.models.PersonalData;
+import pl.telephoners.models.Project;
 import pl.telephoners.models.Role;
 import pl.telephoners.models.UserApp;
 import pl.telephoners.repositories.UserAppRepository;
 
 import javax.mail.MessagingException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -34,13 +36,18 @@ public class UserAppService implements UserDetailsService {
     private UserAppRepository userAppRepository;
     private PersonalDataService personalDataService;
     private MailSenderService mailSenderService;
+    private ProjectsService projectsService;
     @Autowired
-    public UserAppService(PasswordEncoder passwordEncoder, UserAppRepository userAppRepository, PersonalDataService personalDataService, MailSenderService mailSenderService) {
+    public UserAppService( PasswordEncoder passwordEncoder, UserAppRepository userAppRepository, PersonalDataService personalDataService, MailSenderService mailSenderService, ProjectsService projectsService) {
         this.passwordEncoder = passwordEncoder;
         this.userAppRepository = userAppRepository;
         this.personalDataService = personalDataService;
         this.mailSenderService = mailSenderService;
+        this.projectsService = projectsService;
     }
+
+
+
 
 
 
@@ -100,6 +107,20 @@ public class UserAppService implements UserDetailsService {
     }
 
 
+    public boolean deleteUser(long id){
+
+        long personalId = userAppRepository.findFirstById(id).get().getPersonalInformation().getId();
+        List<Project> projectList = projectsService.findProjectsByLeader(personalId);
+        if(projectList == null){
+            projectsService.leaveTheProjectByPersonalId(personalId);
+            userAppRepository.deleteById(id);
+            return true;
+        }
+        projectList.forEach(project -> projectsService.deleteProject(project.getId()));
+        userAppRepository.deleteById(id);
+        return true;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userAppRepository.findAllByUsername(s);
@@ -107,7 +128,7 @@ public class UserAppService implements UserDetailsService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
-       // UserRegister("vcvx" , "torbex" , "faronnorbertkrk@gmail.com");
+        deleteUser(2L);
     }
 
 
