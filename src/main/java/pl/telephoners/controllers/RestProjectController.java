@@ -4,6 +4,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.telephoners.DTO.PersonalDataDTO;
 import pl.telephoners.DTO.PostDTO;
@@ -13,6 +16,8 @@ import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.Project;
 import pl.telephoners.services.ProjectsService;
 
+import javax.websocket.server.PathParam;
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -85,8 +90,15 @@ public class RestProjectController {
         }else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
-
+    }
+    @GetMapping("/enrol/{id}")
+    public ResponseEntity<String> enrolMe(@PathVariable long id, @AuthenticationPrincipal Principal user){
+        boolean participant = projectsService.enrolMeInTheProject(id,user.getName());
+        if(participant){
+            return new ResponseEntity(HttpStatus.CREATED);
+        }else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/participant/{id}")

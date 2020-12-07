@@ -13,6 +13,8 @@ import pl.telephoners.models.Project;
 import pl.telephoners.repositories.ParticipantRepository;
 import pl.telephoners.repositories.PersonalDataRepository;
 import pl.telephoners.repositories.ProjectRepository;
+import pl.telephoners.repositories.UserAppRepository;
+
 import java.util.*;
 
 
@@ -22,18 +24,17 @@ public class ProjectsService {
     private ProjectRepository projectRepository;
     private PersonalDataRepository personalDataRepository;
     private PersonalDataObjectMapperClass personalDataObjectMapperClass;
-    private PersonalDataService personalDataService;
     private ParticipantRepository participantRepository;
     private ProjectObjectMapperClass projectObjectMapperClass;
-
+    private UserAppRepository userAppRepository;
     @Autowired
-    public ProjectsService(ProjectRepository projectRepository, PersonalDataRepository personalDataRepository, PersonalDataObjectMapperClass personalDataObjectMapperClass, PersonalDataService personalDataService, ParticipantRepository participantRepository, ProjectObjectMapperClass projectObjectMapperClass) {
+    public ProjectsService(ProjectRepository projectRepository, PersonalDataRepository personalDataRepository, PersonalDataObjectMapperClass personalDataObjectMapperClass, ParticipantRepository participantRepository, ProjectObjectMapperClass projectObjectMapperClass, UserAppRepository userAppRepository) {
         this.projectRepository = projectRepository;
         this.personalDataRepository = personalDataRepository;
         this.personalDataObjectMapperClass = personalDataObjectMapperClass;
-        this.personalDataService = personalDataService;
         this.participantRepository = participantRepository;
         this.projectObjectMapperClass = projectObjectMapperClass;
+        this.userAppRepository = userAppRepository;
     }
 
 
@@ -101,6 +102,14 @@ public class ProjectsService {
     // Method of joining the participant to the project based on the Project ID and Personal Data ID
     public boolean enrolPersonInTheProject(long projectId, long personalId){
         Optional<Project> project = projectRepository.findById(projectId);
+        Optional<PersonalData> personalData = personalDataRepository.findById(personalId);
+        if(project.isPresent() && personalData.isPresent()) return enrolPersonInTheProject(project.get(),personalData.get());
+        return false;
+    }
+
+    public boolean enrolMeInTheProject(long projectId, String username){
+        Optional<Project> project = projectRepository.findById(projectId);
+        long personalId = userAppRepository.findFirstByUsernameToGetPersonalData(username).get().getPersonalInformation().getId();
         Optional<PersonalData> personalData = personalDataRepository.findById(personalId);
         if(project.isPresent() && personalData.isPresent()) return enrolPersonInTheProject(project.get(),personalData.get());
         return false;

@@ -11,8 +11,14 @@ public interface UserAppRepository extends JpaRepository<UserApp,Long> {
 
     UserApp findAllByUsername(String username);
 
+
     Optional<UserApp> findFirstByUsername(String username);
 
     @Query("select u from UserApp u left join fetch u.personalInformation where u.id = :id")
     Optional<UserApp> findFirstById(@Param("id") long id);
+
+    @Query("select u from UserApp u left join fetch u.personalInformation where u.username = :username")
+    Optional<UserApp> findFirstByUsernameToGetPersonalData(@Param("username") String username);
+
+
 }

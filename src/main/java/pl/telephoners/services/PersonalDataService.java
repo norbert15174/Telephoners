@@ -15,10 +15,15 @@ import java.util.Optional;
 @Service
 public class PersonalDataService {
 
+    private PersonalDataRepository personalDataRepository;
+
     // will change as soon as the creation of the personal data service is completed
     @Autowired
-    private PersonalDataRepository personalDataRepository;
-    private ContactDetailsRepository contactDetailsRepository;
+    public PersonalDataService(PersonalDataRepository personalDataRepository) {
+        this.personalDataRepository = personalDataRepository;
+    }
+
+
 
 
 
@@ -70,6 +75,7 @@ public class PersonalDataService {
             return "recived item doesn't exist";
         }
     }
+
 
     //Get all PersonalData objects
     public List<PersonalData> getAllPersonalData(int page){

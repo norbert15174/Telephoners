@@ -27,8 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/auth/**")
-        .antMatchers("/**");
+        //web.ignoring().antMatchers("/auth/**");
     }
 
     @Override
@@ -36,6 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")
+                .antMatchers("/projects/**").hasAnyRole("ADMIN","USER")
+                .antMatchers("/**").hasAnyRole("ADMIN","USER")
                 .and()
                 .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 

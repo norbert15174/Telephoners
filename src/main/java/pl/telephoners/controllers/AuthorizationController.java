@@ -2,10 +2,12 @@ package pl.telephoners.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.telephoners.services.UserAppService;
 
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -43,6 +45,12 @@ public class AuthorizationController {
         String token = userAppService.login(username, password);
         if (token == null) return new ResponseEntity<>("The username or password is incorrect", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal Principal user){
+        if( userAppService.deleteUser(user.getName())) return new ResponseEntity<>("Account deleted",HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 
 

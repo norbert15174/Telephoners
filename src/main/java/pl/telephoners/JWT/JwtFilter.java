@@ -52,6 +52,8 @@ public class JwtFilter extends OncePerRequestFilter {
             DecodedJWT verify = jwtVerifier.verify(authorization.substring(7));
             String username = verify.getClaim("username").asString();
             String password = verify.getClaim("password").asString();
+            System.out.println(username);
+            System.out.println(password);
             UserDetails userDetails = userAppService.accountVerify(username,password);
 
             if(userDetails == null) return null;

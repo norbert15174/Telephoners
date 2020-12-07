@@ -120,15 +120,20 @@ public class UserAppService implements UserDetailsService {
         userAppRepository.deleteById(id);
         return true;
     }
+    public boolean deleteUser(String username){
+        long personalId = userAppRepository.findFirstByUsernameToGetPersonalData(username).get().getId();
+        return deleteUser(personalId);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return userAppRepository.findAllByUsername(s);
     }
 
+
     @EventListener(ApplicationReadyEvent.class)
     public void init(){
-        deleteUser(2L);
+        //deleteUser(2L);
     }
 
 
