@@ -120,13 +120,4 @@ public class PersonalDataService {
     }
 
 
-    //It will be deleted
-    @EventListener(ApplicationReadyEvent.class)
-    public void asd(){
-
-        addPersonalData();
-
-
-    }
-
 }
