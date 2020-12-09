@@ -19,17 +19,19 @@ import java.util.List;
 @RequestMapping(path = "posts")
 public class PostController {
 
-    @Autowired
+
     private PostService postService;
+    @Autowired
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @PostMapping("upload-images/{authorId}")
     public ResponseEntity<Post> uploadImage(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData,@PathVariable long authorId ){
 
-
         Post post = postService.addNewPost(file,multipartFiles,postData,authorId);
         if(post==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(post,HttpStatus.CREATED);
-
     }
 
     @GetMapping("/page/{page}")
@@ -60,8 +62,8 @@ public class PostController {
 
     }
 
-    @GetMapping("/update/{postId}")
-    public ResponseEntity<Post> updatePost(@RequestParam String topic, @RequestParam String content, @PathVariable long postId){
+    @PostMapping("/update/{postId}")
+    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic,@RequestParam("content") String content, @PathVariable long postId){
         Post post = postService.updatePost(topic,content,postId);
         if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(post,HttpStatus.OK);

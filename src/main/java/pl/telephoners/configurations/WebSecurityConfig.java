@@ -15,7 +15,6 @@ import pl.telephoners.JWT.JwtFilter;
 import pl.telephoners.services.UserAppService;
 
 @Configuration
-@Order(2)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserAppService userAppService;
@@ -27,18 +26,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        //web.ignoring().antMatchers("/auth/**");
+        web.ignoring().antMatchers("/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/projects/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/**").hasAnyRole("ADMIN","USER")
-                .and()
-                .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
+//        http.authorizeRequests()
+//                .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")
+//                .antMatchers("/projects/**").hasAnyRole("ADMIN","USER")
+//                .antMatchers("/**").hasAnyRole("ADMIN","USER")
+//                .and()
+//                .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 
         http.csrf().disable();
     }

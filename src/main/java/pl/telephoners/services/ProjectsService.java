@@ -39,8 +39,8 @@ public class ProjectsService {
 
 
     //Project adding method based on project class and personal data ID
-    public Project addNewProject(Project project, long idleader){
-        Optional<PersonalData> personalData = personalDataRepository.findById(idleader);
+    public Project addNewProject(Project project, long idLeader){
+        Optional<PersonalData> personalData = personalDataRepository.findById(idLeader);
         if(project == null
                 || projectRepository.findById(project.getId()).isPresent()
                 || !personalData.isPresent()
