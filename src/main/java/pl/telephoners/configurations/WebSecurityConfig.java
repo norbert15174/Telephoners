@@ -38,11 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")
                 .antMatchers("/projects/**").hasAnyRole("ADMIN","USER")
+                .antMatchers("/posts/**").hasAnyRole("ADMIN","USER")
                 .antMatchers("/auth/**").hasAnyRole("ADMIN")
+                .antMatchers("/swagger-ui").permitAll()
                 .and()
-                .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 
         http.csrf().disable();
     }
