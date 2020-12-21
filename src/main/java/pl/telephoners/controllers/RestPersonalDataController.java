@@ -4,10 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pl.telephoners.models.PersonalData;
+import pl.telephoners.models.UserApp;
 import pl.telephoners.services.PersonalDataService;
+import pl.telephoners.services.UserAppService;
 
 import java.security.Principal;
 import java.util.List;
@@ -17,12 +20,12 @@ import java.util.List;
 public class RestPersonalDataController {
 
     private PersonalDataService personalDataService;
+    private UserAppService userAppService;
     @Autowired
-    public RestPersonalDataController(PersonalDataService personalDataService) {
+    public RestPersonalDataController(PersonalDataService personalDataService, UserAppService userAppService) {
         this.personalDataService = personalDataService;
+        this.userAppService = userAppService;
     }
-
-
 
 
     @GetMapping
@@ -48,7 +51,9 @@ public class RestPersonalDataController {
     }
 
     @PutMapping()
-    public ResponseEntity<PersonalData> updatePersonalData(@RequestBody PersonalData personalData){
+    public ResponseEntity<PersonalData> updatePersonalData(@RequestBody PersonalData personalData,@AuthenticationPrincipal Principal user){
+        UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
+        if(userApp.getId() != personalData.getId()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         personalData = personalDataService.updatePersonData(personalData);
         if(personalData == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -71,8 +76,19 @@ public class RestPersonalDataController {
         }else {
             return new ResponseEntity<>(personalData,HttpStatus.ACCEPTED);
         }
+    }
+    @GetMapping("/userinfo")
+    public ResponseEntity<PersonalData> getUserInfo(@AuthenticationPrincipal Principal user){
+        UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
+        PersonalData personalData = userApp.getPersonalInformation();
+        if(personalData == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else {
+            return new ResponseEntity<>(personalData,HttpStatus.ACCEPTED);
+        }
 
     }
+
 
 
 

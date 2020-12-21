@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.telephoners.models.ContactDetails;
 import pl.telephoners.models.PersonalData;
+import pl.telephoners.models.UserApp;
 import pl.telephoners.repositories.ContactDetailsRepository;
 import pl.telephoners.repositories.PersonalDataRepository;
 import java.util.List;
@@ -16,12 +18,15 @@ import java.util.Optional;
 public class PersonalDataService {
 
     private PersonalDataRepository personalDataRepository;
-
-    // will change as soon as the creation of the personal data service is completed
     @Autowired
     public PersonalDataService(PersonalDataRepository personalDataRepository) {
         this.personalDataRepository = personalDataRepository;
     }
+
+
+
+
+
 
 
     public PersonalData addPersonalData(){
@@ -117,4 +122,7 @@ public class PersonalDataService {
     }
 
 
+    public PersonalData getPersonalDataByPrincipal(String name) {
+        return null;
+    }
 }

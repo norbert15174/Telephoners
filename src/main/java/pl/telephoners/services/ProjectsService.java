@@ -15,6 +15,7 @@ import pl.telephoners.repositories.PersonalDataRepository;
 import pl.telephoners.repositories.ProjectRepository;
 import pl.telephoners.repositories.UserAppRepository;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 
@@ -155,17 +156,9 @@ public class ProjectsService {
     }
 
     //Delete project relation and project
-    public boolean deleteProject(long id){
+    public boolean deleteProject(long id, long projectId){
         Optional<Project> project = projectRepository.findProjectById(id);
-        if(project.isPresent()){
-            try{
-                projectRepository.delete(project.get());
-                return true;
-            }catch (Exception e){
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
+        if(project.isPresent()){ if(project.get().getLeader().getId() == id) deleteProjectByAdmin(projectId);};
         return false;
     }
 
@@ -222,4 +215,25 @@ public class ProjectsService {
         return false;
     }
 
+    public boolean deleteProjectByAdmin(long id) {
+        Optional<Project> project = projectRepository.findProjectById(id);
+        if(project.isPresent()){
+            try{
+                projectRepository.delete(project.get());
+                return true;
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkIfLeader(long idLeader, long idProject) {
+        Optional<Project> project = projectRepository.findProjectById(idProject);
+        if(project.isPresent()){
+            if(project.get().getId() == idLeader) return true;
+        }
+        return false;
+    }
 }

@@ -87,6 +87,7 @@ public class UserAppService implements UserDetailsService {
 
     public String login(String username, String password){
         UserDetails userDetails = loadUserByUsername(username);
+        if(userDetails == null) return null;
         if(passwordEncoder.matches(password,userDetails.getPassword()) && userDetails.isEnabled()){
             return generateJwt(username,password);
         }
@@ -116,7 +117,7 @@ public class UserAppService implements UserDetailsService {
             userAppRepository.deleteById(id);
             return true;
         }
-        projectList.forEach(project -> projectsService.deleteProject(project.getId()));
+        projectList.forEach(project -> projectsService.deleteProjectByAdmin(project.getId()));
         userAppRepository.deleteById(id);
         return true;
     }
