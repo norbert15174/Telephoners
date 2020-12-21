@@ -47,11 +47,6 @@ public class UserAppService implements UserDetailsService {
     }
 
 
-
-
-
-
-
     public boolean UserRegister(String username, String password, String email) {
         if(userAppRepository.findFirstByUsername(username).isPresent()) return false;
         UserApp userApp = new UserApp();

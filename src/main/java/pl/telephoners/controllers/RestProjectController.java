@@ -148,7 +148,7 @@ public class RestProjectController {
     @PutMapping
     public ResponseEntity<Project> updateProject(@RequestBody ProjectDTO projectDTO,@AuthenticationPrincipal Principal user){
         PersonalData personalData = getUserInformation(user);
-        if(!projectsService.checkIfLeader(personalData.getId(),projectDTO.getId())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);;
+        if(!projectsService.checkIfLeader(personalData.getId(),projectDTO.getId())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Project project = projectsService.updateProject(projectDTO);
         if(project ==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(project,HttpStatus.ACCEPTED);

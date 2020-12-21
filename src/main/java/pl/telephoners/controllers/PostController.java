@@ -10,9 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import pl.telephoners.DTO.PostDTO;
+import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.Post;
+import pl.telephoners.models.UserApp;
 import pl.telephoners.services.PostService;
+import pl.telephoners.services.UserAppService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -21,15 +25,17 @@ public class PostController {
 
 
     private PostService postService;
-    @Autowired
-    public PostController(PostService postService) {
+    private UserAppService userAppService;
+
+    public PostController(PostService postService, UserAppService userAppService) {
         this.postService = postService;
+        this.userAppService = userAppService;
     }
 
-    @PostMapping("upload-images/{authorId}")
-    public ResponseEntity<Post> uploadImage(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData,@PathVariable long authorId ){
-
-        Post post = postService.addNewPost(file,multipartFiles,postData,authorId);
+    @PostMapping("/addpost")
+    public ResponseEntity<Post> addNewPost(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData,@AuthenticationPrincipal Principal user ){
+        PersonalData personalData = getUserInformation(user);
+        Post post = postService.addNewPost(file,multipartFiles,postData,personalData.getId());
         if(post==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(post,HttpStatus.CREATED);
     }
@@ -54,8 +60,9 @@ public class PostController {
     }
 
     @PostMapping("/photos/add/{id}")
-    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id){
-
+    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id,@AuthenticationPrincipal Principal user ){
+        PersonalData personalData = getUserInformation(user);
+        if(!postService.checkIfAuthor(personalData.getId(),id)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         Post post = postService.addPhotosToPost(multipartFiles,id);
         if(post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(post,HttpStatus.OK);
@@ -63,7 +70,9 @@ public class PostController {
     }
 
     @PostMapping("/update/{postId}")
-    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic,@RequestParam("content") String content, @PathVariable long postId){
+    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic,@RequestParam("content") String content, @PathVariable long postId, @AuthenticationPrincipal Principal user){
+        PersonalData personalData = getUserInformation(user);
+        if(!postService.checkIfAuthor(personalData.getId(),postId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         Post post = postService.updatePost(topic,content,postId);
         if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(post,HttpStatus.OK);
@@ -76,9 +85,14 @@ public class PostController {
         return new ResponseEntity<>(postDtos,HttpStatus.OK);
     }
 
-    @GetMapping("/user")
-    public void getUser(@AuthenticationPrincipal UsernamePasswordAuthenticationToken user){
-        System.out.println("asd");
+    private PersonalData getUserInformation(Principal user){
+        UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
+        return userApp.getPersonalInformation();
     }
+
+//    @GetMapping("/user")
+//    public void getUser(@AuthenticationPrincipal UsernamePasswordAuthenticationToken user){
+//        System.out.println("asd");
+//    }
 
 }

@@ -145,7 +145,7 @@ public class PostService {
 
     public Post findPostById(long id){
         Optional<Post> post = postRepository.findPostById(id);
-        if(post.isPresent()) return postRepository.findPostById(id).get();
+        if(post.isPresent()) post.get();
             return null;
 
     }
@@ -212,6 +212,14 @@ public class PostService {
         if(posts.isEmpty()) return null;
         return  postObjectMapperClass.mapPostsToPostsDTO(posts.get());
 
+    }
+
+    public boolean checkIfAuthor(long idAuthor, long idPost) {
+        Optional<Post> post = postRepository.findPostById(idPost);
+        if(post.isPresent()){
+            return post.get().getAuthor().getId() == idAuthor;
+        }
+        return false;
     }
 
 //    @EventListener(ApplicationReadyEvent.class)
