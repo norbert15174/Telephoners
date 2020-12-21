@@ -28,14 +28,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/auth/register")
-//                .antMatchers("/auth/login");
+        web.ignoring().antMatchers("/auth/register")
+                .antMatchers("/auth/login");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-  //          http.authorizeRequests().antMatchers("/**").permitAll();
+            http.authorizeRequests().antMatchers("/**").permitAll();
 
         http.authorizeRequests()
                 .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")

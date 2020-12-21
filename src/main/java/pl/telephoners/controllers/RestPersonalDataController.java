@@ -50,10 +50,10 @@ public class RestPersonalDataController {
 
     }
 
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<PersonalData> updatePersonalData(@RequestBody PersonalData personalData,@AuthenticationPrincipal Principal user){
         UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
-        if(userApp.getId() != personalData.getId()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        if(userApp.getPersonalInformation().getId() != personalData.getId()) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         personalData = personalDataService.updatePersonData(personalData);
         if(personalData == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

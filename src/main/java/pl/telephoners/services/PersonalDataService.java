@@ -122,7 +122,4 @@ public class PersonalDataService {
     }
 
 
-    public PersonalData getPersonalDataByPrincipal(String name) {
-        return null;
-    }
 }

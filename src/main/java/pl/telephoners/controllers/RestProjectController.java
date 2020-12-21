@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.DTO.PersonalDataDTO;
 import pl.telephoners.DTO.PostDTO;
 import pl.telephoners.DTO.ProjectDTO;
@@ -185,14 +186,23 @@ public class RestProjectController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-
-
     @GetMapping("/leader/{id}")
     public ResponseEntity<PersonalData> getLeader(@PathVariable long id){
         PersonalData personalData = projectsService.getLeader(id);
         if(personalData == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(personalData,HttpStatus.OK);
     }
+
+    @PostMapping("/addmainphoto/{id}")
+    public ResponseEntity<Project> addMainPhoto(@RequestParam("file") MultipartFile file,@PathVariable long id, @AuthenticationPrincipal Principal principal ){
+        PersonalData personalData = getUserInformation(principal);
+        if(file.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Project project = projectsService.addMainFileUrlToProject(file,id,personalData.getId());
+        if(project == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(project,HttpStatus.OK);
+    }
+
+
     private PersonalData getUserInformation(Principal user){
         UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
         PersonalData personalData = userApp.getPersonalInformation();

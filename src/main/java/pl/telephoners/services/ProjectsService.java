@@ -1,12 +1,19 @@
 package pl.telephoners.services;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.DTO.PersonalDataDTO;
 import pl.telephoners.DTO.ProjectDTO;
 import pl.telephoners.mappers.PersonalDataObjectMapperClass;
 import pl.telephoners.mappers.ProjectObjectMapperClass;
+import pl.telephoners.models.Gallery;
 import pl.telephoners.models.Participant;
 import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.Project;
@@ -16,11 +23,16 @@ import pl.telephoners.repositories.ProjectRepository;
 import pl.telephoners.repositories.UserAppRepository;
 
 import javax.swing.text.html.Option;
+import java.io.IOException;
 import java.util.*;
 
 
 @Service
 public class ProjectsService {
+
+    Storage storage = StorageOptions.getDefaultInstance().getService();
+    @Value("${url-gcp}")
+    private String urlGCP;
 
     private ProjectRepository projectRepository;
     private PersonalDataRepository personalDataRepository;
@@ -235,5 +247,25 @@ public class ProjectsService {
             if(project.get().getId() == idLeader) return true;
         }
         return false;
+    }
+
+    public Project addMainFileUrlToProject(MultipartFile file, long projectId, long personalID) {
+
+        Optional<Project> projectOptional = projectRepository.findProjectById(projectId);
+        if(!projectOptional.isPresent()) return null;
+        Project project = projectOptional.get();
+        String path = "project/" + projectOptional.get().getId() + "/main/";
+        BlobId blobId = BlobId.of("telephoners",path);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(file.getContentType()).build();
+        try {
+            storage.create(blobInfo,file.getBytes());
+            project.setMainPhotoUrl(urlGCP + path);
+            projectRepository.save(project);
+            return project;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }

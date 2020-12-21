@@ -4,7 +4,6 @@ package pl.telephoners.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +26,7 @@ public class PostController {
     private PostService postService;
     private UserAppService userAppService;
 
+    @Autowired
     public PostController(PostService postService, UserAppService userAppService) {
         this.postService = postService;
         this.userAppService = userAppService;

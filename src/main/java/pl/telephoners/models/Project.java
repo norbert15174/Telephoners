@@ -25,8 +25,9 @@ public class Project {
     private PersonalData leader;
     @JsonIgnore
     @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
-    Set<Participant> participants = new HashSet<>();
+    private Set<Participant> participants = new HashSet<>();
 
+    private String mainPhotoUrl;
 
     public void addParticipant(Participant participant){
         participants.add(participant);
