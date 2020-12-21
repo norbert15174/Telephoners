@@ -29,6 +29,8 @@ public class Post {
     @OneToOne
     @JsonIgnore
     private PersonalData author;
+    //DATA POSTU
+    //LocalDate postDate;
 
 
     public void addPhotoToGallery(Gallery gallery){

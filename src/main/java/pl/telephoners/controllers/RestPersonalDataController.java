@@ -28,7 +28,7 @@ public class RestPersonalDataController {
     @GetMapping
     public ResponseEntity<List<PersonalData>> findAllPersonalData(@RequestParam(defaultValue = "0") int page){
         List<PersonalData> personalData = personalDataService.getAllPersonalData(page);
-        if(personalData.isEmpty()){
+        if(personalData == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity<>(personalData,HttpStatus.ACCEPTED);
@@ -39,7 +39,7 @@ public class RestPersonalDataController {
     @GetMapping(path = "/lastname/{name}")
     public ResponseEntity<List<PersonalData>> findAllPersonalDataByLastName(@RequestParam(defaultValue = "0") int page, @PathVariable String name){
         List<PersonalData> personalData = personalDataService.getPersonalDataByLastName(name,page);
-        if(personalData.isEmpty()){
+        if(personalData == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else{
             return new ResponseEntity<>(personalData,HttpStatus.ACCEPTED);

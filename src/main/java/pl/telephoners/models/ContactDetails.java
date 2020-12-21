@@ -32,6 +32,7 @@ public class ContactDetails {
     private float phoneNumber;
 
 
+
     @JsonIgnore
     @OneToOne(mappedBy = "contactDetailsId", fetch = FetchType.LAZY)
     private PersonalData PersonalDataId;

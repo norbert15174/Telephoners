@@ -24,9 +24,6 @@ public class PersonalDataService {
     }
 
 
-
-
-
     public PersonalData addPersonalData(){
 
         PersonalData personalData = new PersonalData();
@@ -51,7 +48,7 @@ public class PersonalDataService {
         if(personalDataRepository.findById(personalData.getId()).isPresent()){
             try{
                 personalDataRepository.save(personalData);
-                return personalDataRepository.findById(personalData.getId()).get();
+                return personalDataRepository.findPersonDatabyId(personalData.getId()).get();
             }catch (Exception e){
                 System.out.println(e.getMessage());
                 return null;

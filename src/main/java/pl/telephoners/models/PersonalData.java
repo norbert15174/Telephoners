@@ -25,11 +25,13 @@ public class PersonalData {
     private String firstName;
     private String lastName;
     private String fieldOfStudy;
-    private Role role;
+    private MemberRole role;
+    private String skills;
+    //zdjecie
 
 
 
-    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private ContactDetails contactDetailsId;
 
 

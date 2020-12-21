@@ -1,6 +1,7 @@
 package pl.telephoners.DTO;
 
 import lombok.*;
+import pl.telephoners.models.MemberRole;
 import pl.telephoners.models.Role;
 
 @Setter
@@ -15,7 +16,8 @@ public class PersonalDataDTO {
     private String lastName;
     private String fieldOfStudy;
     private String faculty;
-    private Role role;
+    private MemberRole role;
+    private String skills;
 
 
 }
