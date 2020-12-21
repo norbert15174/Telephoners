@@ -25,6 +25,7 @@ import pl.telephoners.repositories.GalleryRepository;
 import pl.telephoners.repositories.PostRepository;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -62,7 +63,7 @@ public class PostService {
             galleries.forEach(gallery -> gallery.setPost(post));
             mainPhoto.setPost(post);
             post.setGalleries(galleries);
-
+            post.setPostDate(LocalDate.now());
 
             post.setMainPhoto(mainPhoto);
             postRepository.save(post);

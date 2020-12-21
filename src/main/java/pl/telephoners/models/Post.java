@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -29,8 +30,7 @@ public class Post {
     @OneToOne
     @JsonIgnore
     private PersonalData author;
-    //DATA POSTU
-    //LocalDate postDate;
+    private LocalDate postDate = LocalDate.now();
 
 
     public void addPhotoToGallery(Gallery gallery){
