@@ -22,11 +22,13 @@ public class AuthorizationController {
 
     @PostMapping("/register")
     public ResponseEntity accountRegister(@RequestBody Map<String,String> register){
+        String name = register.get("name");
+        String surname = register.get("surname");
         String username = register.get("username");
         String password = register.get("password");
         String email = register.get("email");
-        if(username.isBlank() || password.isBlank() || email.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if(userAppService.UserRegister(username,password,email)) return new ResponseEntity(HttpStatus.OK);
+        if(username.isBlank() || password.isBlank() || email.isBlank() || name.isBlank() || surname.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if(userAppService.UserRegister(username,password,email,name , surname)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
     }
 

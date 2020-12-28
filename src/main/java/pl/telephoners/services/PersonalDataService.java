@@ -48,6 +48,27 @@ public class PersonalDataService {
         return personalDataRepository.findById(personalData.getId()).get();
     }
 
+    public PersonalData addPersonalData(String surname, String name){
+
+        PersonalData personalData = new PersonalData();
+        personalData.setFirstName(name);
+        personalData.setLastName(surname);
+
+        //Create new ContactDetails
+        ContactDetails contactDetails =  new ContactDetails();
+        personalData.setContactDetailsId(contactDetails);
+
+        //Save data
+        try{
+            personalDataRepository.save(personalData);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        return personalDataRepository.findById(personalData.getId()).get();
+    }
+
     //Update PersonalData object
     public PersonalData updatePersonData(PersonalData personalData){
         if(personalDataRepository.findById(personalData.getId()).isPresent()){

@@ -47,13 +47,13 @@ public class UserAppService implements UserDetailsService {
     }
 
 
-    public boolean UserRegister(String username, String password, String email) {
+    public boolean UserRegister(String username, String password, String email, String name, String surname) {
         if(userAppRepository.findFirstByUsername(username).isPresent()) return false;
         UserApp userApp = new UserApp();
         userApp.setUsername(username);
         userApp.setPassword(passwordEncoder.encode(password));
         userApp.setEmail(email);
-        userApp.setPersonalInformation(personalDataService.addPersonalData());
+        userApp.setPersonalInformation(personalDataService.addPersonalData(surname, name));
         if(userAppRepository.save(userApp)==null) return false;
 
         String registerString = "<h2>Welcome " + username + ", Thank you for your registration</h2><br>" +
