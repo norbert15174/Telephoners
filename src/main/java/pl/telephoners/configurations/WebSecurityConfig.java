@@ -29,20 +29,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/auth/register")
-                .antMatchers("/auth/login");
+                .antMatchers("/auth/login")
+                .antMatchers("/posts/page/**")
+                .antMatchers("/posts/name/**")
+                .antMatchers("/sendmail/**");
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-            http.authorizeRequests().antMatchers("/**").permitAll();
+//            http.authorizeRequests().antMatchers("/**").permitAll();
 
         http.authorizeRequests()
-                .antMatchers("/persondata/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/projects/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/posts/**").hasAnyRole("ADMIN","USER")
-                .antMatchers("/auth/**").hasAnyRole("ADMIN")
-                .antMatchers("/swagger-ui").permitAll()
+                .antMatchers("/posts/addpost").hasRole("ADMIN")
+                .antMatchers("/posts/{id}").hasRole("ADMIN")
+                .antMatchers("/posts/photos/add/**").hasRole("ADMIN")
+                .antMatchers("/posts/update/{postId}").hasRole("ADMIN")
+                .antMatchers("/posts/author/**").hasRole("ADMIN")
+                .antMatchers("/persondata/").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/admin/**").hasRole("ADMIN")
+                .antMatchers("/persondata/userinfo").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/add").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/add/admin/personal").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/admin/**").hasRole("ADMIN")
+                .antMatchers("/projects/enrol/{id}").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/leave").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/participant").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/leader/delete/{id}").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/recruitment").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/finish").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/leader/get/{id}").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/addmainphoto/**").hasAnyRole("ADMIN","USER","MEMBER")
                 .and()
                 .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 

@@ -63,7 +63,7 @@ public class RestProjectController {
 
     }
 
-    @GetMapping("/admin/enroltoproject")
+    @GetMapping("/admin/enrolintoproject")
     public ResponseEntity<String> enrolInTheProjectByPersonalAndProjectClass(@RequestBody PersonalData personalData,@RequestBody Project project){
 
         boolean participant = projectsService.enrolPersonInTheProject(project,personalData);
@@ -119,7 +119,7 @@ public class RestProjectController {
 
     }
 
-    @GetMapping("/admin/leave")
+    @GetMapping("/admin/kick")
     public ResponseEntity<String> leaveTheProjectByAdmin(@RequestParam long personId,@RequestParam long projectId){
         if(projectsService.leaveTheProject(personId,projectId)) return new ResponseEntity(HttpStatus.ACCEPTED);
         return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
@@ -138,7 +138,7 @@ public class RestProjectController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
 
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/leader/delete/{id}")
     public ResponseEntity<String> deleteTheProject(@PathVariable long id,@AuthenticationPrincipal Principal user){
         PersonalData personalData = getUserInformation(user);
         if(projectsService.deleteProject(personalData.getId(),id)) return new ResponseEntity(HttpStatus.ACCEPTED);
@@ -186,7 +186,7 @@ public class RestProjectController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/leader/{id}")
+    @GetMapping("/leader/get/{id}")
     public ResponseEntity<PersonalData> getLeader(@PathVariable long id){
         PersonalData personalData = projectsService.getLeader(id);
         if(personalData == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);

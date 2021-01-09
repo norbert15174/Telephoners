@@ -61,14 +61,14 @@ public class RestPersonalDataController {
         return new ResponseEntity<>(personalData,HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<String> deletePersonalData(@PathVariable long id){
         String message = personalDataService.deletePersonData(id);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<PersonalData> getPersonalDataById(@PathVariable long id){
         PersonalData personalData = personalDataService.getPersonalDataById(id);
         if(personalData == null){
