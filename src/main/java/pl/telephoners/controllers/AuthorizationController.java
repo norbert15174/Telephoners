@@ -40,13 +40,13 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String,String> login) {
+    public ResponseEntity<Map<String,String>> login(@RequestBody Map<String,String> login) {
         String username = login.get("username");
         String password = login.get("password");
         if (username.isBlank() || password.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        String token = userAppService.login(username, password);
-        if (token == null) return new ResponseEntity<>("The username or password is incorrect", HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        Map<String,String> user = userAppService.login(username, password);
+        if (user == null) return new ResponseEntity("The username or password is incorrect", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteUser(@AuthenticationPrincipal Principal user){

@@ -36,6 +36,7 @@ public class PersonalDataObjectMapperClass {
                 map().setLastName(source.getLastName());
                 map().setRole(source.getRole());
                 map().setSkills(source.getSkills());
+                map().setPhoto(source.getPhotoUrl());
 
             }
         });

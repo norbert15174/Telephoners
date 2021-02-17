@@ -203,6 +203,8 @@ public class RestProjectController {
     }
 
 
+
+
     private PersonalData getUserInformation(Principal user){
         UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
         PersonalData personalData = userApp.getPersonalInformation();

@@ -27,7 +27,7 @@ public class PersonalData {
     private String fieldOfStudy;
     private MemberRole role;
     private String skills;
-    //zdjecie
+    private String photoUrl;
 
 
 

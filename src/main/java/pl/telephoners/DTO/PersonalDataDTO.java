@@ -18,6 +18,7 @@ public class PersonalDataDTO {
     private String faculty;
     private MemberRole role;
     private String skills;
+    private String photo;
 
 
 }

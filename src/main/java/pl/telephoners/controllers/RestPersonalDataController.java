@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.UserApp;
 import pl.telephoners.services.PersonalDataService;
@@ -87,6 +88,19 @@ public class RestPersonalDataController {
             return new ResponseEntity<>(personalData,HttpStatus.ACCEPTED);
         }
 
+    }
+
+    @PostMapping("/set/photo")
+    public ResponseEntity<String> setUserPhoto(@AuthenticationPrincipal Principal user, @RequestParam("photo") MultipartFile file){
+        PersonalData personalData = getUserInformation(user);
+        if(personalDataService.addPersonPhoto(file,personalData.getLastName(),personalData.getId()) == null) return new ResponseEntity<>("The photo could not be added",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Photo has been added",HttpStatus.OK);
+    }
+
+    private PersonalData getUserInformation(Principal user){
+        UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
+        PersonalData personalData = userApp.getPersonalInformation();
+        return personalData;
     }
 
 

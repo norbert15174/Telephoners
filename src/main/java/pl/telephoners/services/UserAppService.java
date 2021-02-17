@@ -22,7 +22,9 @@ import pl.telephoners.models.UserApp;
 import pl.telephoners.repositories.UserAppRepository;
 
 import javax.mail.MessagingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -80,11 +82,15 @@ public class UserAppService implements UserDetailsService {
         });
     }
 
-    public String login(String username, String password){
+    public Map<String,String> login(String username, String password){
         UserDetails userDetails = loadUserByUsername(username);
         if(userDetails == null) return null;
+        String role = userDetails.getAuthorities().toString();
+        Map<String,String> user = new HashMap<>();
         if(passwordEncoder.matches(password,userDetails.getPassword()) && userDetails.isEnabled()){
-            return generateJwt(username,password);
+            user.put("Role",role);
+            user.put("Token", generateJwt(username,password));
+            return user;
         }
         return null;
     }

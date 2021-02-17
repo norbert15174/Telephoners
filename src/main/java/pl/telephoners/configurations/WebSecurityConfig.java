@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/projects/finish").hasAnyRole("ADMIN","USER","MEMBER")
                 .antMatchers("/projects/leader/get/{id}").hasAnyRole("ADMIN","USER","MEMBER")
                 .antMatchers("/projects/addmainphoto/**").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/set/photo").hasAnyRole("ADMIN","USER","MEMBER")
                 .and()
                 .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 
