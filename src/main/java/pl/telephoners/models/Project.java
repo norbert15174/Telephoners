@@ -24,17 +24,17 @@ public class Project {
     @OneToOne(fetch = FetchType.LAZY)
     private PersonalData leader;
     @JsonIgnore
-    @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "projectParticipants", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Participant> participants = new HashSet<>();
 
     private String mainPhotoUrl;
 
-    public void addParticipant(Participant participant){
+    public void addParticipant(Participant participant) {
         participants.add(participant);
     }
 
     private String topic;
-    @Size(max=2000)
+    @Size(max = 2000)
     private String description;
     private boolean isRecruitment = true;
     private boolean isFinished = false;

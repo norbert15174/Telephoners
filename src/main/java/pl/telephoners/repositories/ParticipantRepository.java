@@ -12,15 +12,15 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface ParticipantRepository extends JpaRepository<Participant,Long>{
+public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     @Query("select p from Participant p left join fetch p.projectParticipants where p.personParticipants.id = :id")
     Optional<List<Participant>> getMyProjectParticipation(@Param("id") long id);
 
     @Query("select p from Participant p left join fetch p.projectParticipants where p.personParticipants.id = :id and p.projectParticipants.id = :idProject")
-    Optional<List<Participant>> checkIfExist(@Param("id") long id,@Param("idProject") long projectId);
+    Optional<List<Participant>> checkIfExist(@Param("id") long id, @Param("idProject") long projectId);
 
-    Optional<Participant> getParticipantByPersonParticipantsIdAndAndProjectParticipantsId(long personId,long projectId);
+    Optional<Participant> getParticipantByPersonParticipantsIdAndAndProjectParticipantsId(long personId, long projectId);
 
     Optional<List<Participant>> findAllByPersonParticipantsId(long id);
 

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<Project,Long> {
+public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT p FROM Project p left join fetch p.participants left join fetch p.leader WHERE p.id = :id ")
     Optional<Project> findProjectById(@Param("id") long id);

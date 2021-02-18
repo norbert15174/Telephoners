@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.telephoners.models.ContactDetails;
 
 @Repository
-public interface ContactDetailsRepository extends JpaRepository<ContactDetails,Long> {
+public interface ContactDetailsRepository extends JpaRepository<ContactDetails, Long> {
 }

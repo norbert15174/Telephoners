@@ -30,10 +30,8 @@ public class PersonalData {
     private String photoUrl;
 
 
-
     @OneToOne(cascade = CascadeType.ALL)
     private ContactDetails contactDetailsId;
-
 
 
     private String faculty;

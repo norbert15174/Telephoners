@@ -27,13 +27,14 @@ public class UserApp implements UserDetails {
     long id;
     private String username;
     private String password;
-    private Role role = Role.ROLE_USER;
+    private Role role = Role.ROLE_ADMIN;
     @Email
     private String email;
     @JsonIgnore
-    @OneToOne(fetch=FetchType.EAGER, cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH,CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH, CascadeType.REMOVE})
     private PersonalData personalInformation;
     private boolean enable = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.toString()));

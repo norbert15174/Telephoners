@@ -15,7 +15,7 @@ import java.util.List;
 public class PostObjectMapperClass {
 
     //Init model mapper PersonalData to PersonalDataDTO
-    private ModelMapper postObjectMapper(){
+    private ModelMapper postObjectMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Post, PostDTO>() {
             @Override
@@ -30,21 +30,18 @@ public class PostObjectMapperClass {
     }
 
     //Return mapped models
-    public List<PostDTO> mapPostsToPostsDTO(List<Post> Posts){
+    public List<PostDTO> mapPostsToPostsDTO(List<Post> Posts) {
         List<PostDTO> PostsDTO = new ArrayList<>();
-        Posts.forEach((pd -> PostsDTO.add(postObjectMapper().map(pd,PostDTO.class))));
+        Posts.forEach((pd -> PostsDTO.add(postObjectMapper().map(pd, PostDTO.class))));
         return PostsDTO;
     }
 
     //Return mapped model
-    public PostDTO mapPostToPostDTO(Post post){
+    public PostDTO mapPostToPostDTO(Post post) {
         PostDTO postDTO;
-        postDTO = postObjectMapper().map(post,PostDTO.class);
+        postDTO = postObjectMapper().map(post, PostDTO.class);
         return postDTO;
     }
-
-
-
 
 
 }

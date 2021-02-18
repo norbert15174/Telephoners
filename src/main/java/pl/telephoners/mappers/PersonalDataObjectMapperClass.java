@@ -22,9 +22,8 @@ import java.util.List;
 public class PersonalDataObjectMapperClass {
 
 
-
     //Init model mapper PersonalData to PersonalDataDTO
-    private ModelMapper personalDataObjectMapper(){
+    private ModelMapper personalDataObjectMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<PersonalData, PersonalDataDTO>() {
             @Override
@@ -44,20 +43,18 @@ public class PersonalDataObjectMapperClass {
     }
 
     //Return mapped models
-    public List<PersonalDataDTO> mapPersonalDataToPersonalDataDTO(List<PersonalData> personalData){
+    public List<PersonalDataDTO> mapPersonalDataToPersonalDataDTO(List<PersonalData> personalData) {
         List<PersonalDataDTO> personalDataDTOS = new ArrayList<>();
-        personalData.forEach((pd -> personalDataDTOS.add(personalDataObjectMapper().map(pd,PersonalDataDTO.class))));
+        personalData.forEach((pd -> personalDataDTOS.add(personalDataObjectMapper().map(pd, PersonalDataDTO.class))));
         return personalDataDTOS;
     }
 
     //Return mapped model
-    public PersonalDataDTO mapPersonalDataToPersonalDataDTO(PersonalData personalData){
+    public PersonalDataDTO mapPersonalDataToPersonalDataDTO(PersonalData personalData) {
         PersonalDataDTO personalDataDTOS;
-        personalDataDTOS = personalDataObjectMapper().map(personalData,PersonalDataDTO.class);
+        personalDataDTOS = personalDataObjectMapper().map(personalData, PersonalDataDTO.class);
         return personalDataDTOS;
     }
-
-
 
 
 }

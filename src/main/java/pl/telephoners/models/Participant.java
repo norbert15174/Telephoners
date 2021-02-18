@@ -10,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name="Participants")
+@Table(name = "Participants")
 public class Participant {
 
     @Id
@@ -23,11 +23,9 @@ public class Participant {
     private PersonalData personParticipants = null;
 
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "project_id")
     private Project projectParticipants;
-
-
 
 
 }

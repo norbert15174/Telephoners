@@ -7,7 +7,7 @@ import pl.telephoners.models.UserApp;
 
 import java.util.Optional;
 
-public interface UserAppRepository extends JpaRepository<UserApp,Long> {
+public interface UserAppRepository extends JpaRepository<UserApp, Long> {
 
     UserApp findAllByUsername(String username);
 

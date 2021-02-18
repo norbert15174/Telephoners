@@ -33,59 +33,59 @@ public class PostController {
     }
 
     @PostMapping("/addpost")
-    public ResponseEntity<Post> addNewPost(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData,@AuthenticationPrincipal Principal user ){
+    public ResponseEntity<Post> addNewPost(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData, @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        Post post = postService.addNewPost(file,multipartFiles,postData,personalData.getId());
-        if(post==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(post,HttpStatus.CREATED);
+        Post post = postService.addNewPost(file, multipartFiles, postData, personalData.getId());
+        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<List<Post>> findPosts(@PathVariable int page){
-        return new ResponseEntity<>(postService.findAllPosts(page),HttpStatus.OK);
+    public ResponseEntity<List<Post>> findPosts(@PathVariable int page) {
+        return new ResponseEntity<>(postService.findAllPosts(page), HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<List<Post>> getPostsByName(@PathVariable String name){
+    public ResponseEntity<List<Post>> getPostsByName(@PathVariable String name) {
         List<Post> posts = postService.findPostByName(name);
-        if(posts == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(posts,HttpStatus.OK);
+        if (posts == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> findPostById(@PathVariable long id){
+    public ResponseEntity<Post> findPostById(@PathVariable long id) {
         Post post = postService.findPostById(id);
-        if(post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(post,HttpStatus.OK);
+        if (post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @PostMapping("/photos/add/{id}")
-    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id,@AuthenticationPrincipal Principal user ){
+    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id, @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        if(!postService.checkIfAuthor(personalData.getId(),id)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        Post post = postService.addPhotosToPost(multipartFiles,id);
-        if(post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(post,HttpStatus.OK);
+        if (!postService.checkIfAuthor(personalData.getId(), id)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Post post = postService.addPhotosToPost(multipartFiles, id);
+        if (post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(post, HttpStatus.OK);
 
     }
 
     @PostMapping("/update/{postId}")
-    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic,@RequestParam("content") String content, @PathVariable long postId, @AuthenticationPrincipal Principal user){
+    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic, @RequestParam("content") String content, @PathVariable long postId, @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        if(!postService.checkIfAuthor(personalData.getId(),postId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        Post post = postService.updatePost(topic,content,postId);
-        if(post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(post,HttpStatus.OK);
+        if (!postService.checkIfAuthor(personalData.getId(), postId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        Post post = postService.updatePost(topic, content, postId);
+        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity<List<PostDTO>> getAuthorPosts(@PathVariable long id){
+    public ResponseEntity<List<PostDTO>> getAuthorPosts(@PathVariable long id) {
         List<PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
-        if(postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(postDtos,HttpStatus.OK);
+        if (postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(postDtos, HttpStatus.OK);
     }
 
-    private PersonalData getUserInformation(Principal user){
+    private PersonalData getUserInformation(Principal user) {
         UserApp userApp = (UserApp) userAppService.loadUserByUsername(user.getName());
         return userApp.getPersonalInformation();
     }

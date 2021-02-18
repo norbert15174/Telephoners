@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserAppService userAppService;
 
     @Autowired
-    public WebSecurityConfig(UserAppService userAppService){
+    public WebSecurityConfig(UserAppService userAppService) {
         this.userAppService = userAppService;
     }
 
@@ -30,6 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/auth/register")
                 .antMatchers("/auth/login")
+                .antMatchers("/auth/work")
                 .antMatchers("/posts/page/**")
                 .antMatchers("/posts/name/**")
                 .antMatchers("/sendmail/**");
@@ -47,24 +48,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/posts/photos/add/**").hasRole("ADMIN")
                 .antMatchers("/posts/update/{postId}").hasRole("ADMIN")
                 .antMatchers("/posts/author/**").hasRole("ADMIN")
-                .antMatchers("/persondata/").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/persondata/admin/**").hasRole("ADMIN")
-                .antMatchers("/persondata/userinfo").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/add").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/add/admin/personal").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/persondata/userinfo").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/add").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/add/admin/personal").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/projects/admin/**").hasRole("ADMIN")
-                .antMatchers("/projects/enrol/{id}").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/leave").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/participant").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/leader/delete/{id}").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/recruitment").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/finish").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/leader/get/{id}").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/projects/addmainphoto/**").hasAnyRole("ADMIN","USER","MEMBER")
-                .antMatchers("/persondata/set/photo").hasAnyRole("ADMIN","USER","MEMBER")
+                .antMatchers("/projects/enrol/{id}").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/leave").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/participant").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/leader/delete/{id}").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/recruitment").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/finish").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/leader/get/{id}").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/projects/addmainphoto/**").hasAnyRole("ADMIN", "USER", "MEMBER")
+                .antMatchers("/persondata/set/photo").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .and()
                 .addFilterBefore(new JwtFilter(userAppService), UsernamePasswordAuthenticationFilter.class);
 

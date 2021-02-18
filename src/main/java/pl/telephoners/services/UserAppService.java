@@ -39,8 +39,9 @@ public class UserAppService implements UserDetailsService {
     private PersonalDataService personalDataService;
     private MailSenderService mailSenderService;
     private ProjectsService projectsService;
+
     @Autowired
-    public UserAppService( PasswordEncoder passwordEncoder, UserAppRepository userAppRepository, PersonalDataService personalDataService, MailSenderService mailSenderService, ProjectsService projectsService) {
+    public UserAppService(PasswordEncoder passwordEncoder, UserAppRepository userAppRepository, PersonalDataService personalDataService, MailSenderService mailSenderService, ProjectsService projectsService) {
         this.passwordEncoder = passwordEncoder;
         this.userAppRepository = userAppRepository;
         this.personalDataService = personalDataService;
@@ -50,28 +51,23 @@ public class UserAppService implements UserDetailsService {
 
 
     public boolean UserRegister(String username, String password, String email, String name, String surname) {
-        if(userAppRepository.findFirstByUsername(username).isPresent()) return false;
+        if (userAppRepository.findFirstByUsername(username).isPresent()) return false;
         UserApp userApp = new UserApp();
         userApp.setUsername(username);
         userApp.setPassword(passwordEncoder.encode(password));
         userApp.setEmail(email);
         userApp.setPersonalInformation(personalDataService.addPersonalData(surname, name));
-        if(userAppRepository.save(userApp)==null) return false;
+        if (userAppRepository.save(userApp) == null) return false;
 
         String registerString = "<h2>Welcome " + username + ", Thank you for your registration</h2><br>" +
                 "<h3>To complete the registration process, please click on the link below</h3><br>" +
-                "http://localhost:8000/auth/register?token=" + generateJwt(username,password);
+                "http://telephonersnew.ew.r.appspot.com/auth/register?token=" + generateJwt(username, password);
 
-        try {
-            mailSenderService.sendMail(email,"Telephoners register",registerString,true);
-        } catch (MessagingException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
+        mailSenderService.sendMailByGoogleMailApi(email, "Telephoners register", registerString);
         return true;
     }
 
-    public void enableUserAccount(String token){
+    public void enableUserAccount(String token) {
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512(key)).build();
         DecodedJWT verify = jwtVerifier.verify(token);
         String username = verify.getClaim("username").asString();
@@ -82,14 +78,14 @@ public class UserAppService implements UserDetailsService {
         });
     }
 
-    public Map<String,String> login(String username, String password){
+    public Map<String, String> login(String username, String password) {
         UserDetails userDetails = loadUserByUsername(username);
-        if(userDetails == null) return null;
+        if (userDetails == null) return null;
         String role = userDetails.getAuthorities().toString();
-        Map<String,String> user = new HashMap<>();
-        if(passwordEncoder.matches(password,userDetails.getPassword()) && userDetails.isEnabled()){
-            user.put("Role",role);
-            user.put("Token", generateJwt(username,password));
+        Map<String, String> user = new HashMap<>();
+        if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) {
+            user.put("Role", role);
+            user.put("Token", generateJwt(username, password));
             return user;
         }
         return null;
@@ -97,23 +93,22 @@ public class UserAppService implements UserDetailsService {
 
     private String generateJwt(String username, String password) {
         Algorithm algorithm = Algorithm.HMAC512(key);
-        return JWT.create().withClaim("username", username).withClaim("password",password).sign(algorithm);
+        return JWT.create().withClaim("username", username).withClaim("password", password).sign(algorithm);
     }
 
 
-
-    public UserDetails accountVerify(String username, String password){
+    public UserDetails accountVerify(String username, String password) {
         UserDetails userDetails = loadUserByUsername(username);
-        if(passwordEncoder.matches(password,userDetails.getPassword()) && userDetails.isEnabled()) return userDetails;
+        if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) return userDetails;
         return null;
     }
 
 
-    public boolean deleteUser(long id){
+    public boolean deleteUser(long id) {
 
         long personalId = userAppRepository.findFirstById(id).get().getPersonalInformation().getId();
         List<Project> projectList = projectsService.findProjectsByLeader(personalId);
-        if(projectList == null){
+        if (projectList == null) {
             projectsService.leaveTheProjectByPersonalId(personalId);
             userAppRepository.deleteById(id);
             return true;
@@ -122,7 +117,8 @@ public class UserAppService implements UserDetailsService {
         userAppRepository.deleteById(id);
         return true;
     }
-    public boolean deleteUser(String username){
+
+    public boolean deleteUser(String username) {
         long personalId = userAppRepository.findFirstByUsernameToGetPersonalData(username).get().getId();
         return deleteUser(personalId);
     }
@@ -134,7 +130,7 @@ public class UserAppService implements UserDetailsService {
 
 
     @EventListener(ApplicationReadyEvent.class)
-    public void init(){
+    public void init() {
         //deleteUser(2L);
     }
 

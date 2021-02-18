@@ -21,38 +21,46 @@ public class AuthorizationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity accountRegister(@RequestBody Map<String,String> register){
+    public ResponseEntity accountRegister(@RequestBody Map<String, String> register) {
         String name = register.get("name");
         String surname = register.get("surname");
         String username = register.get("username");
         String password = register.get("password");
         String email = register.get("email");
-        if(username.isBlank() || password.isBlank() || email.isBlank() || name.isBlank() || surname.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        if(userAppService.UserRegister(username,password,email,name , surname)) return new ResponseEntity(HttpStatus.OK);
+        if (username.isBlank() || password.isBlank() || email.isBlank() || name.isBlank() || surname.isBlank())
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if (userAppService.UserRegister(username, password, email, name, surname))
+            return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
     }
 
 
     @GetMapping("/register")
-    public RedirectView enableUserAccount(@RequestParam String token){
+    public RedirectView enableUserAccount(@RequestParam String token) {
         userAppService.enableUserAccount(token);
         return new RedirectView("https://www.baeldung.com/spring-redirect-and-forward");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody Map<String,String> login) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> login) {
         String username = login.get("username");
         String password = login.get("password");
         if (username.isBlank() || password.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        Map<String,String> user = userAppService.login(username, password);
+        Map<String, String> user = userAppService.login(username, password);
         if (user == null) return new ResponseEntity("The username or password is incorrect", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal Principal user){
-        if( userAppService.deleteUser(user.getName())) return new ResponseEntity<>("Account deleted",HttpStatus.OK);
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal Principal user) {
+        if (userAppService.deleteUser(user.getName())) return new ResponseEntity<>("Account deleted", HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+    }
+
+    @GetMapping("/work")
+    public String s() {
+        return "work";
     }
 
 

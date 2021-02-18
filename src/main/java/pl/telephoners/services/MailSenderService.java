@@ -1,14 +1,20 @@
 package pl.telephoners.services;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import pl.telephoners.google.GmailCredentials;
+import pl.telephoners.google.GmailService;
+import pl.telephoners.google.GmailServiceImpl;
 import pl.telephoners.models.MailContact;
 import pl.telephoners.repositories.MailContactRepository;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +31,28 @@ public class MailSenderService {
         this.javaMailSender = javaMailSender;
     }
 
+    public void sendMailByGoogleMailApi(String to,
+
+                                        String subject,
+
+                                        String text){
+
+            try {
+                GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
+                gmailService.setGmailCredentials(GmailCredentials.builder()
+                        .userEmail("")
+                        .clientId("")
+                        .clientSecret("")
+                        .accessToken("")
+                        .refreshToken("")
+                        .build());
+
+                gmailService.sendMessage(to, subject, text);
+            } catch (GeneralSecurityException | IOException | MessagingException e) {
+                e.printStackTrace();
+            }
+    }
+
 
     public void sendMail(String to,
 
@@ -33,6 +61,8 @@ public class MailSenderService {
                          String text,
 
                          boolean isHtmlContent) throws MessagingException {
+
+
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
@@ -49,12 +79,13 @@ public class MailSenderService {
     }
 
     public MailContact addSubscriberMail(MailContact mailContact) {
-        if(!mailContactRepository.findFirstByMailAddress(mailContact.getMailAddress()).isPresent()) return mailContactRepository.save(mailContact);
+        if (!mailContactRepository.findFirstByMailAddress(mailContact.getMailAddress()).isPresent())
+            return mailContactRepository.save(mailContact);
         return null;
     }
 
     public boolean deleteSubscriber(long id) {
-        if(mailContactRepository.findById(id).isPresent()){
+        if (mailContactRepository.findById(id).isPresent()) {
             mailContactRepository.deleteById(id);
             return true;
         }
@@ -64,7 +95,7 @@ public class MailSenderService {
 
     public MailContact findSubscriberMail(String name) {
         Optional<MailContact> mailContact = mailContactRepository.findFirstByMailAddress(name);
-        if(mailContact.isPresent()){
+        if (mailContact.isPresent()) {
             return mailContact.get();
         }
         return null;
@@ -72,7 +103,7 @@ public class MailSenderService {
 
     public MailContact findSubscriberMailById(long id) {
         Optional<MailContact> mailContact = mailContactRepository.findById(id);
-        if(mailContact.isPresent()){
+        if (mailContact.isPresent()) {
             return mailContact.get();
         }
         return null;
@@ -80,7 +111,7 @@ public class MailSenderService {
 
     public List<MailContact> getAllSubscriber() {
         List<MailContact> mailContacts = mailContactRepository.findAll();
-        if(mailContacts.isEmpty()){
+        if (mailContacts.isEmpty()) {
             return null;
         }
         return mailContacts;

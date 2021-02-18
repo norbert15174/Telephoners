@@ -29,7 +29,7 @@ import java.util.Collections;
 
 public class JwtFilter extends OncePerRequestFilter {
 
-   @Value("${Algorithm-key}")
+    @Value("${Algorithm-key}")
     private String key;
 
     UserAppService userAppService;
@@ -47,21 +47,20 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String authorization) {
-        try{
+        try {
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512("x!A%D*G-KaPdSgVkYp3s6v8y/B?E(H+MbQeThWmZq4t7w!z$C&F)J@NcRfUjXn2r")).build();
             DecodedJWT verify = jwtVerifier.verify(authorization.substring(7));
             String username = verify.getClaim("username").asString();
             String password = verify.getClaim("password").asString();
-            UserDetails userDetails = userAppService.accountVerify(username,password);
+            UserDetails userDetails = userAppService.accountVerify(username, password);
 
-            if(userDetails == null) return null;
+            if (userDetails == null) return null;
 
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("message : " + e.getMessage());
             return null;
         }
-
 
 
     }

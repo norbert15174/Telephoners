@@ -21,11 +21,11 @@ public class Post {
     private long id;
     private String topic;
     private String postName;
-    @Size(max=8000)
+    @Size(max = 8000)
     private String content;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Gallery> galleries;
-    @OneToOne( cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Gallery mainPhoto;
     @OneToOne
     @JsonIgnore
@@ -33,7 +33,7 @@ public class Post {
     private LocalDate postDate = LocalDate.now();
 
 
-    public void addPhotoToGallery(Gallery gallery){
+    public void addPhotoToGallery(Gallery gallery) {
         galleries.add(gallery);
     }
 

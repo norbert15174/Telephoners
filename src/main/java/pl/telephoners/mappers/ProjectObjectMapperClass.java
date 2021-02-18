@@ -27,9 +27,8 @@ import java.util.Set;
 public class ProjectObjectMapperClass {
 
 
-
     //Init model mapper PersonalData to PersonalDataDTO
-    private ModelMapper projectObjectMapper(){
+    private ModelMapper projectObjectMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
@@ -43,20 +42,18 @@ public class ProjectObjectMapperClass {
     }
 
     //Return mapped models
-    public List<ProjectDTO> mapProjectToProjectDTO(Set<Project> projects){
+    public List<ProjectDTO> mapProjectToProjectDTO(Set<Project> projects) {
         List<ProjectDTO> projectDTOS = new ArrayList<>();
-        projects.forEach((pd -> projectDTOS.add(projectObjectMapper().map(pd,ProjectDTO.class))));
+        projects.forEach((pd -> projectDTOS.add(projectObjectMapper().map(pd, ProjectDTO.class))));
         return projectDTOS;
     }
 
     //Return mapped model
-    public ProjectDTO mapProjectToProjectDTO(Project project){
+    public ProjectDTO mapProjectToProjectDTO(Project project) {
         ProjectDTO personalDataDTOS;
-        personalDataDTOS = projectObjectMapper().map(project,ProjectDTO.class);
+        personalDataDTOS = projectObjectMapper().map(project, ProjectDTO.class);
         return personalDataDTOS;
     }
-
-
 
 
 }
