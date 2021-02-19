@@ -16,6 +16,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
+@CrossOrigin(origins="*")
 @RestController
 @RequestMapping(path = "/persondata")
 public class RestPersonalDataController {
@@ -95,10 +96,11 @@ public class RestPersonalDataController {
 
     @PostMapping("/set/photo")
     public ResponseEntity<String> setUserPhoto(@AuthenticationPrincipal Principal user, @RequestParam("photo") MultipartFile file) {
-        PersonalData personalData = getUserInformation(user);
-        if (personalDataService.addPersonPhoto(file, personalData.getLastName(), personalData.getId()) == null)
+        PersonalData userInformation = getUserInformation(user);
+        PersonalData personalData = personalDataService.addPersonPhoto(file, userInformation.getLastName(), userInformation.getId());
+        if (personalData == null)
             return new ResponseEntity<>("The photo could not be added", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>("Photo has been added", HttpStatus.OK);
+        return new ResponseEntity<>("Photo has been added: " + personalData.getPhotoUrl() , HttpStatus.OK);
     }
 
     private PersonalData getUserInformation(Principal user) {

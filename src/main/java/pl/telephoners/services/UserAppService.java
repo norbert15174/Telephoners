@@ -84,6 +84,7 @@ public class UserAppService implements UserDetailsService {
         String role = userDetails.getAuthorities().toString();
         Map<String, String> user = new HashMap<>();
         if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) {
+            user.put("Username",username);
             user.put("Role", role);
             user.put("Token", generateJwt(username, password));
             return user;

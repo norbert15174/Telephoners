@@ -9,7 +9,7 @@ import pl.telephoners.services.UserAppService;
 
 import java.security.Principal;
 import java.util.Map;
-
+@CrossOrigin(origins="*")
 @RestController
 @RequestMapping("/auth")
 public class AuthorizationController {
@@ -55,7 +55,6 @@ public class AuthorizationController {
     public ResponseEntity<String> deleteUser(@AuthenticationPrincipal Principal user) {
         if (userAppService.deleteUser(user.getName())) return new ResponseEntity<>("Account deleted", HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
 
     @GetMapping("/work")

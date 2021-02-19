@@ -40,11 +40,11 @@ public class MailSenderService {
             try {
                 GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
                 gmailService.setGmailCredentials(GmailCredentials.builder()
-                        .userEmail("")
-                        .clientId("")
-                        .clientSecret("")
-                        .accessToken("")
-                        .refreshToken("")
+                        .userEmail("faronnorbertkrk@gmail.com")
+                        .clientId("31835092658-bn83gh7p9vdl2gn1bkja52sbe4snqdka.apps.googleusercontent.com")
+                        .clientSecret("cjINZAfOAuS0xSThUmllGrjn")
+                        .accessToken("ya29.A0AfH6SMC0zOr3SktxgXiVD2OlqcMDCMRSgs1TRVYYMFMUseMSauZLUsA1Wb6Iph4t4RxrTd0EqA9fTP5feSz")
+                        .refreshToken("1//04itvqBO_nNyDCgYIARAAGAQSNwF-L9Irlex7pk3zAHl7mGSAp8MJ5fUMBGs8AKCAyknozxNtTh71fX9a4KrtuFEzRAfzEBbv4VU")
                         .build());
 
                 gmailService.sendMessage(to, subject, text);

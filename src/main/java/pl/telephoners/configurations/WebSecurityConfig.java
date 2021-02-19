@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-//            http.authorizeRequests().antMatchers("/**").permitAll();
+  //        http.authorizeRequests().antMatchers("/**").permitAll();
 
         http.authorizeRequests()
                 .antMatchers("/posts/addpost").hasRole("ADMIN")
@@ -48,6 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/posts/photos/add/**").hasRole("ADMIN")
                 .antMatchers("/posts/update/{postId}").hasRole("ADMIN")
                 .antMatchers("/posts/author/**").hasRole("ADMIN")
+                .antMatchers("/posts/{postid}").hasRole("ADMIN")
                 .antMatchers("/persondata/").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")

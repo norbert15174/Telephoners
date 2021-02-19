@@ -18,6 +18,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
+@CrossOrigin(origins="*")
 @RestController
 @RequestMapping(path = "posts")
 public class PostController {
@@ -83,6 +84,19 @@ public class PostController {
         List<PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
         if (postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePostById(@PathVariable long id){
+        return postService.deletePostById(id);
+    }
+    @DeleteMapping("/post/{postid}")
+    public ResponseEntity<String> deletePostById(@PathVariable long postid, @RequestParam long id ){
+        return postService.deletePhotoById(id,postid);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateMainPostPhotoById(@PathVariable long id, @RequestParam("mainfile") MultipartFile file){
+        return postService.updateMainPhoto(id,file);
     }
 
     private PersonalData getUserInformation(Principal user) {

@@ -9,7 +9,7 @@ import pl.telephoners.services.MailSenderService;
 
 import javax.mail.MessagingException;
 import java.util.List;
-
+@CrossOrigin(origins="*")
 @RestController
 public class MailingServiceController {
 

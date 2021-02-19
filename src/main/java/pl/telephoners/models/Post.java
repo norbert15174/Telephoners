@@ -36,5 +36,6 @@ public class Post {
     public void addPhotoToGallery(Gallery gallery) {
         galleries.add(gallery);
     }
+    public boolean deletePhotoFromGallery(Gallery gallery) { return galleries.remove(gallery); }
 
 }

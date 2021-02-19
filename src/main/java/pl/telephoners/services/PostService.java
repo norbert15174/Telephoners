@@ -13,6 +13,8 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.DTO.PostDTO;
@@ -156,6 +158,24 @@ public class PostService {
         return true;
     }
 
+    public ResponseEntity<String> deletePostById(long id){
+        if(!postRepository.findPostById(id).isPresent()) return new ResponseEntity<>("We couldn't delete the post", HttpStatus.BAD_REQUEST);
+        postRepository.deleteById(id);
+        return new ResponseEntity<>("Post has been deleted", HttpStatus.OK);
+    }
+    public ResponseEntity<String> deletePhotoById(long id, long postid){
+      Optional<Gallery> gallery =  galleryRepository.findById(id);
+      Optional<Post> post = postRepository.findPostById(postid);
+      if(!gallery.isPresent() && !post.isPresent()) return new ResponseEntity<>("We couldn't delete the photo", HttpStatus.BAD_REQUEST);
+      galleryRepository.deleteById(id);
+      Post postToUpdate = post.get();
+      postToUpdate.deletePhotoFromGallery(gallery.get());
+      postRepository.save(postToUpdate);
+      return new ResponseEntity<>("The photo has been deleted", HttpStatus.OK);
+    };
+
+
+
     public Post addPhotosToPost(MultipartFile[] multipartFiles, long id) {
 
         Post post = findPostById(id);
@@ -220,6 +240,18 @@ public class PostService {
             return post.get().getAuthor().getId() == idAuthor;
         }
         return false;
+    }
+
+    public ResponseEntity<String> updateMainPhoto(long id, MultipartFile file) {
+        Optional<Post> post = postRepository.findPostById(id);
+        if(!post.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Post postToSave = post.get();
+        Gallery mainPhotoPath = addNewMainPhoto(file,postToSave.getPostName());
+        if(mainPhotoPath == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        postToSave.setMainPhoto(mainPhotoPath);
+        postRepository.save(postToSave);
+        galleryRepository.deleteById(post.get().getMainPhoto().getId());
+        return new ResponseEntity<>("Photos has been changed" , HttpStatus.OK);
     }
 
 //    @EventListener(ApplicationReadyEvent.class)
