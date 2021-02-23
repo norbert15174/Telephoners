@@ -10,7 +10,7 @@ Project include:
  - Sharing information about finished projects, current projects, and future projects.
 
 Future:
- - linking the website with the research lending system.
+ - Connecting the website with the scientific element rental system.
 
 Used stack:
  - Java, Spring Boot (JWT, Cloud, JPA, etc.), HTML, css, Vue, JS, Google cloud platform (storage, Mail Api, SQL).
