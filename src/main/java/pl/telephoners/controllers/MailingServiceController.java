@@ -1,6 +1,7 @@
 package pl.telephoners.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,8 @@ import java.util.List;
 @CrossOrigin(origins="*")
 @RestController
 public class MailingServiceController {
-
-
+    @Value("${telephoners-email}")
+    private static String telephonersMail;
     private MailSenderService mailSenderService;
 
     @Autowired
@@ -52,6 +53,12 @@ public class MailingServiceController {
         return new ResponseEntity<>(mailSenderService.getAllSubscriber(), HttpStatus.OK);
     }
 
+    @GetMapping("/sendMail/template")
+    public ResponseEntity<String> sendContactMail(@RequestParam String meesage) throws MessagingException{
+        String topic = "Email would like contact with you";
+        if(mailSenderService.sendMailByGoogleMailApi(this.telephonersMail,topic,meesage)) return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+    }
 
 }
 

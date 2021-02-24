@@ -31,7 +31,7 @@ public class MailSenderService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMailByGoogleMailApi(String to,
+    public boolean sendMailByGoogleMailApi(String to,
 
                                         String subject,
 
@@ -48,8 +48,10 @@ public class MailSenderService {
                         .build());
 
                 gmailService.sendMessage(to, subject, text);
+                return true;
             } catch (GeneralSecurityException | IOException | MessagingException e) {
                 e.printStackTrace();
+                return false;
             }
     }
 

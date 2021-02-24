@@ -33,7 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/work")
                 .antMatchers("/posts/page/**")
                 .antMatchers("/posts/name/**")
-                .antMatchers("/sendmail/**");
+                .antMatchers(HttpMethod.POST,"/sendmail")
+                .antMatchers("/sendMail/template");
 
     }
 
@@ -49,6 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/posts/update/{postId}").hasRole("ADMIN")
                 .antMatchers("/posts/author/**").hasRole("ADMIN")
                 .antMatchers("/posts/{postid}").hasRole("ADMIN")
+                .antMatchers("/sendMail/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/sendMail").hasRole("ADMIN")
                 .antMatchers("/persondata/").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")
                 .antMatchers("/persondata/lastname/**").hasAnyRole("ADMIN", "USER", "MEMBER")
