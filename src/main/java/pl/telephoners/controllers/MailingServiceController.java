@@ -10,6 +10,8 @@ import pl.telephoners.services.MailSenderService;
 
 import javax.mail.MessagingException;
 import java.util.List;
+import java.util.Map;
+
 @CrossOrigin(origins="*")
 @RestController
 public class MailingServiceController {
@@ -53,10 +55,15 @@ public class MailingServiceController {
         return new ResponseEntity<>(mailSenderService.getAllSubscriber(), HttpStatus.OK);
     }
 
-    @GetMapping("/sendMail/template")
-    public ResponseEntity<String> sendContactMail(@RequestParam String meesage) throws MessagingException{
-        String topic = "Email would like contact with you";
-        if(mailSenderService.sendMailByGoogleMailApi(this.telephonersMail,topic,meesage)) return new ResponseEntity(HttpStatus.OK);
+    @PostMapping("/sendMail/template")
+    public ResponseEntity<String> sendContactMail(@RequestBody Map<String,String> contact){
+        String topic = contact.get("email") + " would like to contact you \n " + contact.get("message");
+        if(contact.get("isCopyRequired") == "yes") {
+            String copiedMessage = "Message copied from the telephoners website \n + " + contact.get("message");
+            String copiedTopic = "Message from the telephoners website: + " + contact.get("topic");
+            mailSenderService.sendMailByGoogleMailApi(contact.get("email"),copiedTopic,copiedMessage);
+        }
+        if(mailSenderService.sendMailByGoogleMailApi(this.telephonersMail,topic,contact.get("message"))) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
     }
 

@@ -63,8 +63,7 @@ public class UserAppService implements UserDetailsService {
                 "<h3>To complete the registration process, please click on the link below</h3><br>" +
                 "http://telephonersnew.ew.r.appspot.com/auth/register?token=" + generateJwt(username, password);
 
-        mailSenderService.sendMailByGoogleMailApi(email, "Telephoners register", registerString);
-        return true;
+        return mailSenderService.sendMailByGoogleMailApi(email, "Telephoners register", registerString);
     }
 
     public void enableUserAccount(String token) {
