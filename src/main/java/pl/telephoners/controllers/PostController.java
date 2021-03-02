@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import pl.telephoners.DTO.PostDTO;
+import pl.telephoners.DTO.PostPageDTO;
 import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.Post;
 import pl.telephoners.models.UserApp;
@@ -18,7 +19,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin(origins="*")
+@CrossOrigin(origins = "*",allowCredentials = "true",allowedHeaders = "*")
 @RestController
 @RequestMapping(path = "posts")
 public class PostController {
@@ -42,8 +43,12 @@ public class PostController {
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<List<Post>> findPosts(@PathVariable int page) {
+    public ResponseEntity<List<PostPageDTO>> findPosts(@PathVariable int page) {
         return new ResponseEntity<>(postService.findAllPosts(page), HttpStatus.OK);
+    }
+    @GetMapping("/actual")
+    public ResponseEntity<List<Post>> findActualPosts() {
+        return new ResponseEntity<>(postService.findActualPosts(), HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")
@@ -104,9 +109,9 @@ public class PostController {
         return userApp.getPersonalInformation();
     }
 
-//    @GetMapping("/user")
-//    public void getUser(@AuthenticationPrincipal UsernamePasswordAuthenticationToken user){
-//        System.out.println("asd");
-//    }
+    @GetMapping("/user")
+    public String getUser(@AuthenticationPrincipal Principal user){
+        return user.getName();
+    }
 
 }

@@ -18,8 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.DTO.PostDTO;
+import pl.telephoners.DTO.PostPageDTO;
 import pl.telephoners.mappers.PersonalDataObjectMapperClass;
 import pl.telephoners.mappers.PostObjectMapperClass;
+import pl.telephoners.mappers.PostPageObjectMapperClass;
 import pl.telephoners.models.Gallery;
 import pl.telephoners.models.PersonalData;
 import pl.telephoners.models.Post;
@@ -42,13 +44,15 @@ public class PostService {
     private PostRepository postRepository;
     private PersonalDataService personalDataService;
     private PostObjectMapperClass postObjectMapperClass;
+    private PostPageObjectMapperClass postPageObjectMapperClass;
 
-    public PostService(PersonalDataObjectMapperClass personalDataObjectMapperClass, GalleryRepository galleryRepository, PostRepository postRepository, PersonalDataService personalDataService, PostObjectMapperClass postObjectMapperClass) {
+    public PostService(PersonalDataObjectMapperClass personalDataObjectMapperClass, GalleryRepository galleryRepository, PostRepository postRepository, PersonalDataService personalDataService, PostObjectMapperClass postObjectMapperClass, PostPageObjectMapperClass postPageObjectMapperClass) {
         this.personalDataObjectMapperClass = personalDataObjectMapperClass;
         this.galleryRepository = galleryRepository;
         this.postRepository = postRepository;
         this.personalDataService = personalDataService;
         this.postObjectMapperClass = postObjectMapperClass;
+        this.postPageObjectMapperClass = postPageObjectMapperClass;
     }
 
     public Post addNewPost(MultipartFile file, MultipartFile[] multipartFiles, String postData, long authorId) {
@@ -132,9 +136,20 @@ public class PostService {
     }
 
 
-    public List<Post> findAllPosts(int page) {
+    public List<PostPageDTO> findAllPosts(int page) {
         page = page < 0 ? 0 : page;
-        Optional<List<Post>> posts = postRepository.findAllPosts(PageRequest.of(page, 10));
+        Optional<List<Post>> posts = postRepository.findAllPosts(PageRequest.of(page, 5));
+
+        if(posts.isPresent()) {
+            long postAmount = postRepository.count();
+            List<PostPageDTO> postPageDTOS = postPageObjectMapperClass.mapPostsToPostsDTO(posts.get(),postAmount);
+            return postPageDTOS;
+        }
+        return null;
+    }
+
+    public List<Post> findActualPosts() {
+        Optional<List<Post>> posts = postRepository.findAllPosts(PageRequest.of(0, 3));
         return posts.orElse(null);
     }
 
@@ -146,9 +161,8 @@ public class PostService {
 
     public Post findPostById(long id) {
         Optional<Post> post = postRepository.findPostById(id);
-        if (post.isPresent()) post.get();
+        if (post.isPresent()) return post.get();
         return null;
-
     }
 
     //to modify

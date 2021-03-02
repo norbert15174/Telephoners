@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String authorization = httpServletRequest.getHeader("Authorization");
+        System.out.println(authorization);
         UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(authorization);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(httpServletRequest, httpServletResponse);
@@ -48,8 +49,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String authorization) {
         try {
+
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512("x!A%D*G-KaPdSgVkYp3s6v8y/B?E(H+MbQeThWmZq4t7w!z$C&F)J@NcRfUjXn2r")).build();
             DecodedJWT verify = jwtVerifier.verify(authorization.substring(7));
+
             String username = verify.getClaim("username").asString();
             String password = verify.getClaim("password").asString();
             UserDetails userDetails = userAppService.accountVerify(username, password);
