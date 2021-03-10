@@ -25,6 +25,6 @@ public class PostPageDTO {
     private String authorName;
     private String authorSurname;
     private LocalDate postDate;
-    private long postAmount;
+
 
 }

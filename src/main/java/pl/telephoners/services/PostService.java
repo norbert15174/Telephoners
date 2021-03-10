@@ -141,8 +141,7 @@ public class PostService {
         Optional<List<Post>> posts = postRepository.findAllPosts(PageRequest.of(page, 5));
 
         if(posts.isPresent()) {
-            long postAmount = postRepository.count();
-            List<PostPageDTO> postPageDTOS = postPageObjectMapperClass.mapPostsToPostsDTO(posts.get(),postAmount);
+            List<PostPageDTO> postPageDTOS = postPageObjectMapperClass.mapPostsToPostsDTO(posts.get());
             return postPageDTOS;
         }
         return null;
@@ -159,9 +158,12 @@ public class PostService {
         return posts.get();
     }
 
-    public Post findPostById(long id) {
+    public PostPageDTO findPostById(long id) {
         Optional<Post> post = postRepository.findPostById(id);
-        if (post.isPresent()) return post.get();
+        if (post.isPresent()){
+            PostPageDTO postPageDTOS = postPageObjectMapperClass.mapPostToPostDTO(post.get());
+            return postPageDTOS;
+        }
         return null;
     }
 
@@ -191,10 +193,10 @@ public class PostService {
 
 
     public Post addPhotosToPost(MultipartFile[] multipartFiles, long id) {
+        if(!postRepository.findPostById(id).isPresent())
+            return null;
+         Post post = postRepository.findPostById(id).get();
 
-        Post post = findPostById(id);
-
-        if (post == null) return null;
 
         Arrays.asList(multipartFiles).stream().forEach(multipartFile ->
         {
@@ -266,6 +268,10 @@ public class PostService {
         postRepository.save(postToSave);
         galleryRepository.deleteById(post.get().getMainPhoto().getId());
         return new ResponseEntity<>("Photos has been changed" , HttpStatus.OK);
+    }
+
+    public ResponseEntity<Long> getPostsAmount(){
+        return new ResponseEntity<>(postRepository.count(), HttpStatus.OK);
     }
 
 //    @EventListener(ApplicationReadyEvent.class)

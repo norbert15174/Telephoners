@@ -16,7 +16,7 @@ import java.util.List;
 public class PostPageObjectMapperClass {
 
 
-    private ModelMapper postObjectMapper(long postAmount) {
+    private ModelMapper postObjectMapper() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Post, PostPageDTO>() {
             @Override
@@ -30,7 +30,6 @@ public class PostPageObjectMapperClass {
                 map().setMainPhoto(source.getMainPhoto());
                 map().setGalleries(source.getGalleries());
                 map().setPostDate(source.getPostDate());
-                map().setPostAmount(postAmount);
 
             }
         });
@@ -38,16 +37,16 @@ public class PostPageObjectMapperClass {
     }
 
     //Return mapped models
-    public List<PostPageDTO> mapPostsToPostsDTO(List<Post> posts, long postAmount) {
+    public List<PostPageDTO> mapPostsToPostsDTO(List<Post> posts) {
         List<PostPageDTO> postPageDTOS = new ArrayList<>();
-        posts.forEach((pd -> postPageDTOS.add(postObjectMapper(postAmount).map(pd, PostPageDTO.class))));
+        posts.forEach((pd -> postPageDTOS.add(postObjectMapper().map(pd, PostPageDTO.class))));
         return postPageDTOS;
     }
 
     //Return mapped model
-    public PostPageDTO mapPostToPostDTO(Post post, long postAmount) {
+    public PostPageDTO mapPostToPostDTO(Post post) {
         PostPageDTO postPageDTO;
-        postPageDTO = postObjectMapper(postAmount).map(post, PostPageDTO.class);
+        postPageDTO = postObjectMapper().map(post, PostPageDTO.class);
         return postPageDTO;
     }
 

@@ -59,8 +59,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> findPostById(@PathVariable long id) {
-        Post post = postService.findPostById(id);
+    public ResponseEntity<PostPageDTO> findPostById(@PathVariable long id) {
+        PostPageDTO post = postService.findPostById(id);
         if (post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
@@ -112,6 +112,11 @@ public class PostController {
     @GetMapping("/user")
     public String getUser(@AuthenticationPrincipal Principal user){
         return user.getName();
+    }
+
+    @GetMapping("/amount")
+    public ResponseEntity<Long> getPostsAmount(){
+        return postService.getPostsAmount();
     }
 
 }
