@@ -2,6 +2,7 @@ package pl.telephoners.services;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,16 @@ public class MailSenderService {
 
     private MailContactRepository mailContactRepository;
     private JavaMailSender javaMailSender;
+    @Value("${main-email}")
+    private String userMail;
+    @Value("${mail-client-id}")
+    private String clientId;
+    @Value("${mail-client-secret}")
+    private String clientSecret;
+    @Value("${mail-access-token}")
+    private String accessToken;
+    @Value("${mail-refresh-token}")
+    private String refreshToken;
 
     @Autowired
     public MailSenderService(MailContactRepository mailContactRepository, JavaMailSender javaMailSender) {
@@ -31,7 +42,29 @@ public class MailSenderService {
         this.javaMailSender = javaMailSender;
     }
 
+    public boolean sendMailByGoogleMailApi(String to,
 
+                                        String subject,
+
+                                        String text){
+
+            try {
+                GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
+                gmailService.setGmailCredentials(GmailCredentials.builder()
+                        .userEmail(this.userMail)
+                        .clientId(this.clientId)
+                        .clientSecret(this.clientSecret)
+                        .accessToken(this.accessToken)
+                        .refreshToken(this.refreshToken)
+                        .build());
+
+                gmailService.sendMessage(to, subject, text);
+                return true;
+            } catch (GeneralSecurityException | IOException | MessagingException e) {
+                e.printStackTrace();
+                return false;
+            }
+    }
 
 
     public void sendMail(String to,
