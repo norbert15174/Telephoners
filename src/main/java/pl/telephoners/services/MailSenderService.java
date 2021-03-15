@@ -31,29 +31,7 @@ public class MailSenderService {
         this.javaMailSender = javaMailSender;
     }
 
-    public boolean sendMailByGoogleMailApi(String to,
 
-                                        String subject,
-
-                                        String text){
-
-            try {
-                GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
-                gmailService.setGmailCredentials(GmailCredentials.builder()
-                        .userEmail("faronnorbertkrk@gmail.com")
-                        .clientId("31835092658-bn83gh7p9vdl2gn1bkja52sbe4snqdka.apps.googleusercontent.com")
-                        .clientSecret("cjINZAfOAuS0xSThUmllGrjn")
-                        .accessToken("ya29.A0AfH6SMC0zOr3SktxgXiVD2OlqcMDCMRSgs1TRVYYMFMUseMSauZLUsA1Wb6Iph4t4RxrTd0EqA9fTP5feSz")
-                        .refreshToken("1//04itvqBO_nNyDCgYIARAAGAQSNwF-L9Irlex7pk3zAHl7mGSAp8MJ5fUMBGs8AKCAyknozxNtTh71fX9a4KrtuFEzRAfzEBbv4VU")
-                        .build());
-
-                gmailService.sendMessage(to, subject, text);
-                return true;
-            } catch (GeneralSecurityException | IOException | MessagingException e) {
-                e.printStackTrace();
-                return false;
-            }
-    }
 
 
     public void sendMail(String to,
