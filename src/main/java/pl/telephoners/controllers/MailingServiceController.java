@@ -58,7 +58,7 @@ public class MailingServiceController {
     @PostMapping("/sendMail/template")
     public ResponseEntity<String> sendContactMail(@RequestBody Map<String,String> contact){
         String topic = contact.get("email") + " would like to contact you \n " + contact.get("message");
-        if(contact.get("isCopyRequired") == "yes") {
+        if(contact.get("isCopyRequired").matches("yes")) {
             String copiedMessage = "Message copied from the telephoners website \n + " + contact.get("message");
             String copiedTopic = "Message from the telephoners website: + " + contact.get("topic");
             mailSenderService.sendMailByGoogleMailApi(contact.get("email"),copiedTopic,copiedMessage);

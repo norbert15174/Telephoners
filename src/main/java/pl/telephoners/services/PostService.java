@@ -9,13 +9,15 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import pl.telephoners.DTO.PostDTO;
 import pl.telephoners.DTO.PostPageDTO;
@@ -46,7 +48,8 @@ public class PostService {
     private PostObjectMapperClass postObjectMapperClass;
     private PostPageObjectMapperClass postPageObjectMapperClass;
 
-    public PostService(PersonalDataObjectMapperClass personalDataObjectMapperClass, GalleryRepository galleryRepository, PostRepository postRepository, PersonalDataService personalDataService, PostObjectMapperClass postObjectMapperClass, PostPageObjectMapperClass postPageObjectMapperClass) {
+    @Autowired
+    public PostService(PersonalDataObjectMapperClass personalDataObjectMapperClass , GalleryRepository galleryRepository , PostRepository postRepository , PersonalDataService personalDataService , PostObjectMapperClass postObjectMapperClass , PostPageObjectMapperClass postPageObjectMapperClass) {
         this.personalDataObjectMapperClass = personalDataObjectMapperClass;
         this.galleryRepository = galleryRepository;
         this.postRepository = postRepository;
@@ -54,6 +57,7 @@ public class PostService {
         this.postObjectMapperClass = postObjectMapperClass;
         this.postPageObjectMapperClass = postPageObjectMapperClass;
     }
+
 
     public Post addNewPost(MultipartFile file, MultipartFile[] multipartFiles, String postData, long authorId) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -84,6 +88,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public Set<Gallery> addNewPhotos(MultipartFile[] multipartFiles, String postName) {
 
         Set<Gallery> galleryList = new HashSet<>();
@@ -113,7 +118,7 @@ public class PostService {
         return galleryList;
 
     }
-
+    @Transactional
     public Gallery addNewMainPhoto(MultipartFile file, String postName) {
         String path = "post/" + postName + "/main/";
         for (int i = 0; ; i++) {
@@ -140,7 +145,7 @@ public class PostService {
         page = page < 0 ? 0 : page;
         Optional<List<Post>> posts = postRepository.findAllPosts(PageRequest.of(page, 5));
 
-        if(posts.isPresent()) {
+        if (posts.isPresent()) {
             List<PostPageDTO> postPageDTOS = postPageObjectMapperClass.mapPostsToPostsDTO(posts.get());
             return postPageDTOS;
         }
@@ -160,7 +165,7 @@ public class PostService {
 
     public PostPageDTO findPostById(long id) {
         Optional<Post> post = postRepository.findPostById(id);
-        if (post.isPresent()){
+        if (post.isPresent()) {
             PostPageDTO postPageDTOS = postPageObjectMapperClass.mapPostToPostDTO(post.get());
             return postPageDTOS;
         }
@@ -174,28 +179,32 @@ public class PostService {
         return true;
     }
 
-    public ResponseEntity<String> deletePostById(long id){
-        if(!postRepository.findPostById(id).isPresent()) return new ResponseEntity<>("We couldn't delete the post", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> deletePostById(long id) {
+        if (!postRepository.findPostById(id).isPresent())
+            return new ResponseEntity<>("We couldn't delete the post", HttpStatus.BAD_REQUEST);
         postRepository.deleteById(id);
         return new ResponseEntity<>("Post has been deleted", HttpStatus.OK);
     }
-    public ResponseEntity<String> deletePhotoById(long id, long postid){
-      Optional<Gallery> gallery =  galleryRepository.findById(id);
-      Optional<Post> post = postRepository.findPostById(postid);
-      if(!gallery.isPresent() && !post.isPresent()) return new ResponseEntity<>("We couldn't delete the photo", HttpStatus.BAD_REQUEST);
-      galleryRepository.deleteById(id);
-      Post postToUpdate = post.get();
-      postToUpdate.deletePhotoFromGallery(gallery.get());
-      postRepository.save(postToUpdate);
-      return new ResponseEntity<>("The photo has been deleted", HttpStatus.OK);
-    };
 
+    public ResponseEntity<String> deletePhotoById(long id, long postid) {
+        Optional<Gallery> gallery = galleryRepository.findById(id);
+        Optional<Post> post = postRepository.findPostById(postid);
+        if (!gallery.isPresent() && !post.isPresent())
+            return new ResponseEntity<>("We couldn't delete the photo", HttpStatus.BAD_REQUEST);
+        galleryRepository.deleteById(id);
+        Post postToUpdate = post.get();
+        postToUpdate.deletePhotoFromGallery(gallery.get());
+        postRepository.save(postToUpdate);
+        return new ResponseEntity<>("The photo has been deleted", HttpStatus.OK);
+    }
 
+    ;
 
+    @Transactional
     public Post addPhotosToPost(MultipartFile[] multipartFiles, long id) {
-        if(!postRepository.findPostById(id).isPresent())
+        if (!postRepository.findPostById(id).isPresent())
             return null;
-         Post post = postRepository.findPostById(id).get();
+        Post post = postRepository.findPostById(id).get();
 
 
         Arrays.asList(multipartFiles).stream().forEach(multipartFile ->
@@ -257,20 +266,20 @@ public class PostService {
         }
         return false;
     }
-
+    @Transactional
     public ResponseEntity<String> updateMainPhoto(long id, MultipartFile file) {
         Optional<Post> post = postRepository.findPostById(id);
-        if(!post.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!post.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         Post postToSave = post.get();
-        Gallery mainPhotoPath = addNewMainPhoto(file,postToSave.getPostName());
-        if(mainPhotoPath == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Gallery mainPhotoPath = addNewMainPhoto(file, postToSave.getPostName());
+        if (mainPhotoPath == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         postToSave.setMainPhoto(mainPhotoPath);
         postRepository.save(postToSave);
         galleryRepository.deleteById(post.get().getMainPhoto().getId());
-        return new ResponseEntity<>("Photos has been changed" , HttpStatus.OK);
+        return new ResponseEntity<>("Photos has been changed", HttpStatus.OK);
     }
 
-    public ResponseEntity<Long> getPostsAmount(){
+    public ResponseEntity<Long> getPostsAmount() {
         return new ResponseEntity<>(postRepository.count(), HttpStatus.OK);
     }
 

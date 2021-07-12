@@ -21,10 +21,13 @@ import pl.telephoners.services.UserAppService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 
 public class JwtFilter extends OncePerRequestFilter {
@@ -40,18 +43,34 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = httpServletRequest.getHeader("Authorization");
-        System.out.println(authorization);
-        UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(authorization);
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        String cookieName = "token";
+        Optional <String> authorization = Arrays.stream(httpServletRequest.getCookies())
+                .filter(cookie-> cookieName.equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findAny();
+        if(authorization.isEmpty()){
+            httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization Failed");
+        } else{
+            try {
+                UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(authorization.get(),httpServletResponse);
+                if(authenticationToken == null){
+                    httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Wrong token");
+                } else {
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    filterChain.doFilter(httpServletRequest, httpServletResponse);
+                }
+            }catch ( IOException e ){
+                System.err.println("wrong token");
+            }
+
+        }
     }
 
-    private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String authorization) {
+    private UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken(String authorization, HttpServletResponse httpServletResponse) throws IOException {
         try {
 
             JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC512("x!A%D*G-KaPdSgVkYp3s6v8y/B?E(H+MbQeThWmZq4t7w!z$C&F)J@NcRfUjXn2r")).build();
-            DecodedJWT verify = jwtVerifier.verify(authorization.substring(7));
+            DecodedJWT verify = jwtVerifier.verify(authorization);
 
             String username = verify.getClaim("username").asString();
             String password = verify.getClaim("password").asString();
@@ -61,7 +80,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } catch (Exception e) {
-            System.out.println("message : " + e.getMessage());
+            System.err.println("message : " + e.getMessage());
             return null;
         }
 

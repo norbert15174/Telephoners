@@ -22,6 +22,8 @@ import pl.telephoners.models.UserApp;
 import pl.telephoners.repositories.UserAppRepository;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,15 +79,21 @@ public class UserAppService implements UserDetailsService {
         });
     }
 
-    public Map<String, String> login(String username, String password) {
+    public Map<String, String> login(String username, String password, HttpServletResponse response) {
         UserDetails userDetails = loadUserByUsername(username);
         if (userDetails == null) return null;
         String role = userDetails.getAuthorities().toString();
         Map<String, String> user = new HashMap<>();
         if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) {
+            // create a cookie
+            Cookie cookie = new Cookie("token", generateJwt(username, password));
+            cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+            cookie.setHttpOnly(true);
+            cookie.setPath("/"); // global cookie accessible every where
+            //add cookie to response
+            response.addCookie(cookie);
             user.put("Username",userDetails.getUsername());
             user.put("Role", role);
-            user.put("Token", generateJwt(username, password));
             return user;
         }
         return null;

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.telephoners.services.UserAppService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.Map;
 @CrossOrigin(origins="*")
@@ -42,11 +43,11 @@ public class AuthorizationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> login) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> login, HttpServletResponse response) {
         String username = login.get("username");
         String password = login.get("password");
         if (username.isBlank() || password.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        Map<String, String> user = userAppService.login(username, password);
+        Map<String, String> user = userAppService.login(username, password, response);
         if (user == null) return new ResponseEntity("The username or password is incorrect", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
