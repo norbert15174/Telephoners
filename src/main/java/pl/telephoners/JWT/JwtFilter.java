@@ -27,7 +27,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 public class JwtFilter extends OncePerRequestFilter {
@@ -44,11 +46,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String cookieName = "token";
+        List <String> authorization1 = Arrays.stream(httpServletRequest.getCookies())
+                .map(Cookie::getValue).collect(Collectors.toList());
+        authorization1.forEach(System.out::println);
+
         Optional <String> authorization = Arrays.stream(httpServletRequest.getCookies())
                 .filter(cookie-> cookieName.equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findAny();
-        if(authorization.isEmpty()){
+        if(!authorization.isPresent()){
             httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization Failed");
         } else{
             try {
