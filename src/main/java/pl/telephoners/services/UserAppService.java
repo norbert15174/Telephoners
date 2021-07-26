@@ -90,12 +90,6 @@ public class UserAppService implements UserDetailsService {
             // create a cookie
             ResponseCookie cookie = ResponseCookie.from("token", generateJwt(username, password)).sameSite("None").secure(true).maxAge(7 * 24 * 60 * 60).path("/").build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-//            cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-//           // cookie.setHttpOnly(true);
-//            cookie.setPath("/"); // global cookie accessible every where
-
-            //add cookie to response
-            //response.addCookie(cookie);
             user.put("Username",userDetails.getUsername());
             user.put("Role", role);
             return user;
