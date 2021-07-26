@@ -12,7 +12,7 @@ import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*", allowCredentials = "true")
 @RestController
 public class MailingServiceController {
     @Value("${telephoners-email}")

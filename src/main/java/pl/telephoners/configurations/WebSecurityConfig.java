@@ -36,6 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userAppService = userAppService;
     }
 
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/auth/register")
@@ -87,6 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
     }
+
 //
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {

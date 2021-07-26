@@ -24,7 +24,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*", allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/projects")
 public class RestProjectController {

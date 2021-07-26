@@ -19,7 +19,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin(origins = "*",allowCredentials = "true",allowedHeaders = "*")
+@CrossOrigin(origins = "*",allowCredentials = "true")
 @RestController
 @RequestMapping(path = "posts")
 public class PostController {

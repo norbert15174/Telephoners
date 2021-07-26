@@ -10,7 +10,7 @@ import pl.telephoners.services.UserAppService;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.Map;
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*",allowCredentials = "true")
 @RestController
 @RequestMapping("/auth")
 public class AuthorizationController {

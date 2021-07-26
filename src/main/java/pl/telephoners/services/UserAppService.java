@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -86,12 +88,14 @@ public class UserAppService implements UserDetailsService {
         Map<String, String> user = new HashMap<>();
         if (passwordEncoder.matches(password, userDetails.getPassword()) && userDetails.isEnabled()) {
             // create a cookie
-            Cookie cookie = new Cookie("token", generateJwt(username, password));
-            cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
-            cookie.setHttpOnly(true);
-            cookie.setPath("/"); // global cookie accessible every where
+            ResponseCookie cookie = ResponseCookie.from("token", generateJwt(username, password)).sameSite("None").secure(true).maxAge(7 * 24 * 60 * 60).path("/").build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+//            cookie.setMaxAge(7 * 24 * 60 * 60); // expires in 7 days
+//           // cookie.setHttpOnly(true);
+//            cookie.setPath("/"); // global cookie accessible every where
+
             //add cookie to response
-            response.addCookie(cookie);
+            //response.addCookie(cookie);
             user.put("Username",userDetails.getUsername());
             user.put("Role", role);
             return user;

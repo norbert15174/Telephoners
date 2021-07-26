@@ -16,7 +16,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin(origins="*")
+@CrossOrigin(origins="*", allowCredentials = "true")
 @RestController
 @RequestMapping(path = "/persondata")
 public class RestPersonalDataController {
