@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,7 +25,7 @@ public class Post {
     @Size(max = 8000)
     private String content;
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<Gallery> galleries;
+    private Set<Gallery> galleries = new HashSet <>();
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Gallery mainPhoto;
     @OneToOne
@@ -35,6 +36,9 @@ public class Post {
 
     public void addPhotoToGallery(Gallery gallery) {
         galleries.add(gallery);
+    }
+    public void addPhotoToGallery(Set<Gallery> gallery) {
+        galleries.addAll(gallery);
     }
     public boolean deletePhotoFromGallery(Gallery gallery) { return galleries.remove(gallery); }
 

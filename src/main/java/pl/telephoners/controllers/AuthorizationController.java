@@ -46,7 +46,7 @@ public class AuthorizationController {
     public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> login, HttpServletResponse response) {
         String username = login.get("username");
         String password = login.get("password");
-        if (username.isBlank() || password.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if (username == null || username.isBlank() || password == null || password.isBlank()) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         Map<String, String> user = userAppService.login(username, password, response);
         if (user == null) return new ResponseEntity("The username or password is incorrect", HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(user, HttpStatus.OK);

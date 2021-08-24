@@ -58,35 +58,39 @@ public class PostService {
         this.postPageObjectMapperClass = postPageObjectMapperClass;
     }
 
-
-    public Post addNewPost(MultipartFile file, MultipartFile[] multipartFiles, String postData, long authorId) {
+    @Transactional
+    public Post addPhotosToPost(MultipartFile file, MultipartFile[] multipartFiles, long postId, long authorId) {
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            Post post = objectMapper.readValue(postData, Post.class);
-            if (postRepository.findPostByPostName(post.getPostName()).isPresent()) return null;
-            if (post.getPostName().isBlank()) return null;
+            Optional<Post> postOpt = postRepository.findPostById(postId);
+            if(!postOpt.isPresent()) return null;
+            Post post = postOpt.get();
             PersonalData personalData = personalDataService.getPersonalDataById(authorId);
             if (personalData == null) return null;
-            post.setAuthor(personalData);
-            Set<Gallery> galleries = addNewPhotos(multipartFiles, post.getPostName());
-            Gallery mainPhoto = addNewMainPhoto(file, post.getPostName());
-            galleries.forEach(gallery -> gallery.setPost(post));
-            mainPhoto.setPost(post);
-            post.setGalleries(galleries);
-            post.setPostDate(LocalDate.now());
-
-            post.setMainPhoto(mainPhoto);
+            if(post.getAuthor().getId() != personalData.getId()) return null;
+            if(file != null){
+                Gallery mainPhoto = addNewMainPhoto(file, post.getPostName());
+                post.setMainPhoto(mainPhoto);
+            }
+            if(multipartFiles != null){
+                Set<Gallery> galleries = addNewPhotos(multipartFiles, post.getPostName());
+                post.addPhotoToGallery(galleries);
+            }
             postRepository.save(post);
             return postRepository.findPostByPostName(post.getPostName()).get();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            return null;
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
+    @Transactional
+    public ResponseEntity<Post> addPost(Post post, long authorId){
+        if(postRepository.findPostByPostName(post.getPostName()).isPresent()) return new ResponseEntity("taki post już istnieje", HttpStatus.CONFLICT);
+        PersonalData personalData = personalDataService.getPersonalDataById(authorId);
+        if (personalData == null) return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        if(post.getPostName() == null || post.getPostName().isBlank()) return new ResponseEntity("brak nazwy posta", HttpStatus.BAD_REQUEST);
+        if(post.getTopic() == null || post.getTopic().isBlank()) return new ResponseEntity("brak tematu posta", HttpStatus.BAD_REQUEST);
+        if(post.getContent() == null || post.getContent().isBlank()) return new ResponseEntity("brak opisu posta", HttpStatus.BAD_REQUEST);
+        post.setAuthor(personalData);
+        post.setPostDate(LocalDate.now());
+        return new ResponseEntity(postRepository.save(post), HttpStatus.CREATED);
+    }
 
     @Transactional
     public Set<Gallery> addNewPhotos(MultipartFile[] multipartFiles, String postName) {

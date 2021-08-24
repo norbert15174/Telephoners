@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import pl.telephoners.DTO.PostDTO;
 import pl.telephoners.DTO.PostPageDTO;
 import pl.telephoners.models.PersonalData;
@@ -19,7 +18,7 @@ import pl.telephoners.services.UserAppService;
 import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin(origins = "*",allowCredentials = "true")
+@CrossOrigin(origins = "*", allowCredentials = "true")
 @RestController
 @RequestMapping(path = "posts")
 public class PostController {
@@ -29,79 +28,89 @@ public class PostController {
     private UserAppService userAppService;
 
     @Autowired
-    public PostController(PostService postService, UserAppService userAppService) {
+    public PostController(PostService postService , UserAppService userAppService) {
         this.postService = postService;
         this.userAppService = userAppService;
     }
 
-    @PostMapping("/addpost")
-    public ResponseEntity<Post> addNewPost(@RequestParam("mainfile") MultipartFile file, @RequestParam("galleryfiles") MultipartFile[] multipartFiles, @RequestParam("Post") String postData, @AuthenticationPrincipal Principal user) {
+    @PostMapping("/addpost/photos")
+    public ResponseEntity <Post> addNewPost(@RequestParam(value = "mainfile", required = false) MultipartFile file , @RequestParam(value = "galleryfiles", required = false) MultipartFile[] multipartFiles , @RequestParam("postId") long postId , @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        Post post = postService.addNewPost(file, multipartFiles, postData, personalData.getId());
-        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(post, HttpStatus.CREATED);
+        Post post = postService.addPhotosToPost(file , multipartFiles , postId , personalData.getId());
+        if ( post == null ) return new ResponseEntity <>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity <>(post , HttpStatus.CREATED);
+    }
+
+    @PostMapping("/addpost")
+    public ResponseEntity <Post> addNewPost(@RequestBody Post post , @AuthenticationPrincipal Principal user) {
+        PersonalData personalData = getUserInformation(user);
+        return postService.addPost(post , personalData.getId());
     }
 
     @GetMapping("/page/{page}")
-    public ResponseEntity<List<PostPageDTO>> findPosts(@PathVariable int page) {
-        return new ResponseEntity<>(postService.findAllPosts(page), HttpStatus.OK);
+    public ResponseEntity <List <PostPageDTO>> findPosts(@PathVariable int page) {
+        return new ResponseEntity <>(postService.findAllPosts(page) , HttpStatus.OK);
     }
+
     @GetMapping("/actual")
-    public ResponseEntity<List<Post>> findActualPosts() {
-        return new ResponseEntity<>(postService.findActualPosts(), HttpStatus.OK);
+    public ResponseEntity <List <Post>> findActualPosts() {
+        return new ResponseEntity <>(postService.findActualPosts() , HttpStatus.OK);
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<List<Post>> getPostsByName(@PathVariable String name) {
-        List<Post> posts = postService.findPostByName(name);
-        if (posts == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+    public ResponseEntity <List <Post>> getPostsByName(@PathVariable String name) {
+        List <Post> posts = postService.findPostByName(name);
+        if ( posts == null ) return new ResponseEntity <>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity <>(posts , HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostPageDTO> findPostById(@PathVariable long id) {
+    public ResponseEntity <PostPageDTO> findPostById(@PathVariable long id) {
         PostPageDTO post = postService.findPostById(id);
-        if (post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        if ( post == null ) return new ResponseEntity <>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity <>(post , HttpStatus.OK);
     }
 
     @PostMapping("/photos/add/{id}")
-    public ResponseEntity<Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles, @PathVariable long id, @AuthenticationPrincipal Principal user) {
+    public ResponseEntity <Post> addNewPhotosToPost(@RequestParam("galleryfiles") MultipartFile[] multipartFiles , @PathVariable long id , @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        if (!postService.checkIfAuthor(personalData.getId(), id)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        Post post = postService.addPhotosToPost(multipartFiles, id);
-        if (post == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        if ( !postService.checkIfAuthor(personalData.getId() , id) ) return new ResponseEntity <>(HttpStatus.FORBIDDEN);
+        Post post = postService.addPhotosToPost(multipartFiles , id);
+        if ( post == null ) return new ResponseEntity <>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity <>(post , HttpStatus.OK);
 
     }
 
     @PostMapping("/update/{postId}")
-    public ResponseEntity<Post> updatePost(@RequestParam("topic") String topic, @RequestParam("content") String content, @PathVariable long postId, @AuthenticationPrincipal Principal user) {
+    public ResponseEntity <Post> updatePost(@RequestParam("topic") String topic , @RequestParam("content") String content , @PathVariable long postId , @AuthenticationPrincipal Principal user) {
         PersonalData personalData = getUserInformation(user);
-        if (!postService.checkIfAuthor(personalData.getId(), postId)) return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        Post post = postService.updatePost(topic, content, postId);
-        if (post == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        if ( !postService.checkIfAuthor(personalData.getId() , postId) )
+            return new ResponseEntity <>(HttpStatus.FORBIDDEN);
+        Post post = postService.updatePost(topic , content , postId);
+        if ( post == null ) return new ResponseEntity <>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity <>(post , HttpStatus.OK);
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity<List<PostDTO>> getAuthorPosts(@PathVariable long id) {
-        List<PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
-        if (postDtos == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(postDtos, HttpStatus.OK);
+    public ResponseEntity <List <PostDTO>> getAuthorPosts(@PathVariable long id) {
+        List <PostDTO> postDtos = postService.getPostDTOByAuthorId(id);
+        if ( postDtos == null ) return new ResponseEntity <>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity <>(postDtos , HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePostById(@PathVariable long id){
+    public ResponseEntity <String> deletePostById(@PathVariable long id) {
         return postService.deletePostById(id);
     }
+
     @DeleteMapping("/post/{postid}")
-    public ResponseEntity<String> deletePostById(@PathVariable long postid, @RequestParam long id ){
-        return postService.deletePhotoById(id,postid);
+    public ResponseEntity <String> deletePostById(@PathVariable long postid , @RequestParam long id) {
+        return postService.deletePhotoById(id , postid);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateMainPostPhotoById(@PathVariable long id, @RequestParam("mainfile") MultipartFile file){
-        return postService.updateMainPhoto(id,file);
+    public ResponseEntity <String> updateMainPostPhotoById(@PathVariable long id , @RequestParam("mainfile") MultipartFile file) {
+        return postService.updateMainPhoto(id , file);
     }
 
     private PersonalData getUserInformation(Principal user) {
@@ -110,12 +119,12 @@ public class PostController {
     }
 
     @GetMapping("/user")
-    public String getUser(@AuthenticationPrincipal Principal user){
+    public String getUser(@AuthenticationPrincipal Principal user) {
         return user.getName();
     }
 
     @GetMapping("/amount")
-    public ResponseEntity<Long> getPostsAmount(){
+    public ResponseEntity <Long> getPostsAmount() {
         return postService.getPostsAmount();
     }
 
